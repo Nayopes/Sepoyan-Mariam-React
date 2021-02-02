@@ -27,9 +27,6 @@ function App() {
 
   return (
     <div className="App">
-      {/* <Welcome />
-      <Text />
-      <Thanks /> */}
       <div className="card_wrapper">
         <Card title={card1.imgTitle} img={card1.imgUrl} imgAlt={card1.imgAlt} text={card1.imgText} />
         <Card title={card2.imgTitle} img={card2.imgUrl} imgAlt={card2.imgAlt} text={card2.imgText} />
