@@ -6,6 +6,7 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   background-color: #e8e2e6;
+  height: 1300px;
 }
 
 code {
@@ -31,4 +32,17 @@ h2{
   font-family: Arial, Helvetica, sans-serif;
   color: #5d4856;
   text-align: center;
+}
+.task{
+  width: 200px;
+  padding: 25px;
+  border: 1px solid grey;
+  border-radius: 10px;
+  background-color: #f5f5f5;
+}
+.task_wrapper {
+  display: flex;
+  justify-content: space-between;
+  width: 70%;
+  margin: 100px auto;
 }

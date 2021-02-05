@@ -4,7 +4,8 @@ import './App.css'
 // import Text from './Components/secondComp'
 // import Thanks from './Components/thirdComp'
 import Card from './Components/Card'
-import Counter from "./Components/Counter";
+import Counter from "./Components/Counter"
+import ToDo from './Components/ToDo'
 
 function App() {
   const card1 = {
@@ -34,6 +35,7 @@ function App() {
         <Card title={card3.imgTitle} img={card3.imgUrl} imgAlt={card3.imgAlt} text={card3.imgText} />
       </div>
       <Counter />
+      <ToDo />
     </div>
   )
 }
