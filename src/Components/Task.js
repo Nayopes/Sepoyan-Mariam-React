@@ -1,8 +1,8 @@
-
-function Task ({task}) {
+import React from 'react'
+const Task = ({task}) => {
     return(
-        <p className = "task_wrapper">
-            {task} 
+        <p className="task">
+            {task}
         </p>
     )
 }

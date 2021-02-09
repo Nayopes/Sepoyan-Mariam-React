@@ -8,15 +8,13 @@ import Task from './Task'
     render(){
         const Tasks = this.state.tasks.map((task, index) => {
             return (
-                <p key={index} className="task">
-                    {task}
-                </p>
+                <Task task={task} key={index}/>
             )
         })
         return(
             <div>
-                <div>
-                   <Task task={Tasks}/>
+                <div className="task_wrapper">
+                    {Tasks}
                 </div>
                 <div>
                     <input
