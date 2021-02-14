@@ -1,11 +1,10 @@
-
 import './App.css'
-import ToDo from './Components/ToDo/ToDo'
+import Grid from './Components/ToDo/Grid'
 
 function App() {
   return (
     <div className="App">
-      <ToDo />
+      <Grid />
     </div>
   )
 }

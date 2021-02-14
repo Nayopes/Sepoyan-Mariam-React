@@ -30,7 +30,7 @@ class AddNewTask extends React.Component {
                     className = {styles.input}
                 />
                 <button
-                    onClick = {handleS}
+                  //  onClick = {handleS}
                     className = {styles.button}
                 >
                     Add

@@ -30,7 +30,9 @@ import styles from './todo.module.css'
         return(
             <div>
                 <div className={styles.title}>
-                    <h1>To Do Component</h1>
+                    <h1>
+                        To Do Component
+                    </h1>
                 </div>
                 <div>
                     <AddNewTask 
