@@ -22,7 +22,6 @@ import AddNewTask from './AddNewTask'
                     task={task} 
                     key={index}
                     active={index === 1}
-                    active={index === 2}
                 />
             )
         })
