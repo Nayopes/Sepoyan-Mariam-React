@@ -23,7 +23,6 @@ import styles from './todo.module.css'
                     task={task} 
                     key={index}
                     active={index === 1}
-                    active={index === 2}
                 />
             )
         })
