@@ -1,0 +1,16 @@
+.title{
+    text-align: center;
+    height: 60px;
+    font-size: 50px;
+    background-color: rgba(75, 2, 61, 0.8);
+    color: whitesmoke;
+    position: sticky;
+    top:  0;
+    left: 0;
+}
+.tasksWrapper{
+    display: flex;
+    justify-content: space-between;
+    width: 70%;
+    margin: 100px auto;
+}

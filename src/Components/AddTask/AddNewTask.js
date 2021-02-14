@@ -1,4 +1,5 @@
 import React from 'react'
+import styles from './addTask.module.css'
 
 class AddNewTask extends React.Component {
     state = {
@@ -26,9 +27,11 @@ class AddNewTask extends React.Component {
                     placeholder = "Add new task"
                     onChange = {this.handleChange}
                     value = {inputValue}
+                    className = {styles.input}
                 />
                 <button
-                onClick = {handleS}
+                    onClick = {handleS}
+                    className = {styles.button}
                 >
                     Add
                 </button>
