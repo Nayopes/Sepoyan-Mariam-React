@@ -2,6 +2,8 @@ import React from 'react'
 import Task from '../Task/Task'
 import AddNewTask from '../AddTask/AddNewTask'
 import styles from './todo.module.css'
+import RandomId from '../helpers/RandomId'
+import { Container , Row , Col } from 'react-bootstrap'
 
  class ToDo extends React.Component {
     state = {
@@ -19,29 +21,35 @@ import styles from './todo.module.css'
         const {tasks} = this.state
         const Tasks = tasks.map((task, index) => {
             return (
-                <Task 
-                    task={task} 
-                    key={index}
-                    active={index === 1}
-                    active={index === 2}
-                />
+                <Col 
+                    key={RandomId()}
+                    className="d-flex justify-content-center mt-3"
+                    xs={12}
+                    md={6}
+                    xl={3}
+                >
+                    <Task 
+                        task={task} 
+                    />
+                </Col>
             )
         })
         return(
             <div>
-                <div className={styles.title}>
-                    <h1>
-                        To Do Component
-                    </h1>
-                </div>
-                <div>
-                    <AddNewTask 
-                        handleSubmit={this.handleSubmit}
-                    />
-                </div>
-                <div className={styles.tasksWrapper}>
-                    {Tasks}
-                </div>
+                <Container>
+                    <Row className="justify-content-center mt-4">
+                        <Col>
+                            <h1 className={styles.title}>To Do Component</h1>
+                            <AddNewTask 
+                                handleSubmit={this.handleSubmit}
+                            />
+                        </Col>
+                    </Row>
+                    <Row className="justify-content-center mt-4">
+                        {!tasks.length && <div> Sorry, tasks is empty!</div>}
+                        {Tasks}
+                    </Row>
+                </Container>
             </div>
            
         )    

@@ -1,8 +1,8 @@
 .task{
-    width: 130px;
+    width: 80%;
     border: 1px solid black;
     border-radius: 8px;
-    background-color: rgba(53, 1, 23, 0.6);
+    background-color: rgba(90, 7, 42, .6) ;
     color: rgb(247, 240, 243);
     padding: 40px;
     margin-left: 10px;
