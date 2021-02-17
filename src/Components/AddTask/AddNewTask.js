@@ -32,6 +32,7 @@ class AddNewTask extends React.Component {
                 <button
                     onClick = {handleS}
                     className = {styles.button}
+                    disabled = {!!!inputValue}
                 >
                     Add
                 </button>
