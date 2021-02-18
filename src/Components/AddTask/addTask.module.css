@@ -1,16 +1,6 @@
-.input{
-    width: 200px;
-    height: 35px;
-    border-radius: 10px;
-    border: 2px solid rgb(102, 101, 101);
-    background-color: transparent;
-    margin: 10px;
-}
-.button{
-    width: 50px;
-    height: 35px;
-    border-radius: 10px;
-    border: 2px solid rgb(102, 101, 101);
-    background-color: transparent;
-    margin: 10px;
+
+.formsRow{
+    display: flex;
+    justify-content: center;
+    margin-top: 40px;
 }

@@ -1,9 +1,7 @@
-.task{
-    width: 80%;
-    border: 1px solid black;
+.card{
+    width: 18rem;
+    border: 2px solid white;
     border-radius: 8px;
-    background-color: rgba(90, 7, 42, .6) ;
+    background-color: rgba(92, 10, 48, 0.6) ;
     color: rgb(247, 240, 243);
-    padding: 40px;
-    margin-left: 10px;
 }

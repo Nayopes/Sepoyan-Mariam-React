@@ -3,7 +3,7 @@ import Task from '../Task/Task'
 import AddNewTask from '../AddTask/AddNewTask'
 import styles from './todo.module.css'
 import RandomId from '../helpers/RandomId'
-import { Container , Row , Col } from 'react-bootstrap'
+import { Container , Row , Col, Button } from 'react-bootstrap'
 
  class ToDo extends React.Component {
     state = {
@@ -33,6 +33,7 @@ import { Container , Row , Col } from 'react-bootstrap'
                 `
             }
         ],
+        removeTasks: new Set(),
     }
     handleSubmit = (value) => {
         if (!value) return
@@ -52,8 +53,33 @@ import { Container , Row , Col } from 'react-bootstrap'
             tasks
         })
     }
+    toggleSetRemoveTaskIds = (_id) =>{
+        let removeTasks = new Set(this.state.removeTasks)
+        if (removeTasks.has(_id)){
+            removeTasks.delete(_id)
+        }else{
+            removeTasks.add(_id)
+        }
+        this.setState({
+            removeTasks
+        })      
+    }
+    removeSelectedTasks = () => {
+        let tasks = [...this.state.tasks]
+        let removeTasks = new Set(this.state.removeTasks)
+        tasks = tasks.filter(el=>!removeTasks.has(el._id))
+        this.setState({
+            tasks,
+            removeTasks: new Set()
+        })
+    }
+    removeAllTasks = () => {
+        this.setState({
+            tasks:[]
+        })
+    }
     render(){
-        const {tasks} = this.state
+        const {tasks, removeTasks} = this.state
         const Tasks = tasks.map(task => {
             return (
                 <Col 
@@ -64,8 +90,10 @@ import { Container , Row , Col } from 'react-bootstrap'
                     xl={3}
                 >
                     <Task 
-                        task={task} 
-                        handleDeleteOneTask ={this.handleDeleteOneTask}
+                        task = {task} 
+                        handleDeleteOneTask = {this.handleDeleteOneTask}
+                        toggleSetRemoveTaskIds = {this.toggleSetRemoveTaskIds}
+                        disabled={!!removeTasks.size}
                     />
                 </Col>
             )
@@ -73,17 +101,38 @@ import { Container , Row , Col } from 'react-bootstrap'
         return(
             <div>
                 <Container>
-                    <Row className="justify-content-center mt-4">
+                    <Row className="d-flex justify-content-center mt-4">
                         <Col>
                             <h1 className={styles.title}>To Do Component</h1>
                             <AddNewTask 
                                 handleSubmit={this.handleSubmit}
+                                disabled={!!removeTasks.size}
                             />
                         </Col>
                     </Row>
-                    <Row className="justify-content-center mt-4">
+                    <Row className="d-flex justify-content-center mt-4 mb-4">
                         {!tasks.length && <div> Sorry, tasks are empty!</div>}
                         {Tasks}
+                    </Row>
+                    <Row className="d-flex justify-content-center">
+                        <Col>
+                            <Button
+                                variant="danger" 
+                                className={!tasks.length && 'd-none'}
+                                onClick={this.removeSelectedTasks}
+                                disabled={!!!removeTasks.size}
+                            >
+                                Remove Selected
+                            </Button>
+                            <Button
+                                variant="danger"
+                                className={!tasks.length ? 'd-none' : 'ml-3'}
+                                onClick={this.removeAllTasks}
+                                disabled={!!removeTasks.size}
+                            >
+                                Remove All Tasks
+                            </Button>
+                        </Col>
                     </Row>
                 </Container>
             </div>
