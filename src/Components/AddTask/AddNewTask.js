@@ -25,6 +25,7 @@ class AddNewTask extends React.Component {
     }
     render() {
         const {inputValue} = this.state
+        const {disabled} = this.props
         return(
             <div className={styles.formsRow}>
                 <Form.Control 
@@ -34,6 +35,7 @@ class AddNewTask extends React.Component {
                 onKeyPress = {this.handleS}
                 value = {inputValue}
                 style = {{width: '60%', marginRight: '10px'}}
+                disabled = {disabled}
                 />
                 <Button
                     variant = 'primary'
