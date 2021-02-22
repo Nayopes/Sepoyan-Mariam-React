@@ -1,11 +1,11 @@
-import React from 'react'
+import React  from 'react'
 import Task from '../Task/Task'
 import AddNewTask from '../AddTask/AddNewTask'
 import styles from './todo.module.css'
 import RandomId from '../helpers/RandomId'
-import { Container , Row , Col, Button } from 'react-bootstrap'
+import {Container, Row, Col, Button} from 'react-bootstrap'
 
- class ToDo extends React.Component {
+class ToDo extends React.Component {
     state = {
         tasks: [
             {
@@ -48,63 +48,81 @@ import { Container , Row , Col, Button } from 'react-bootstrap'
     }
     handleDeleteOneTask = (id) => {
         let tasks = [...this.state.tasks]
-        tasks = tasks.filter(el=>el._id!==id)
+        tasks = tasks.filter(el => el._id !== id)
         this.setState({
             tasks
         })
     }
-    toggleSetRemoveTaskIds = (_id) =>{
+    toggleSetRemoveTaskIds = (_id) => {
         let removeTasks = new Set(this.state.removeTasks)
-        if (removeTasks.has(_id)){
+        if (removeTasks.has(_id)) {
             removeTasks.delete(_id)
-        }else{
+        } else {
             removeTasks.add(_id)
         }
         this.setState({
             removeTasks
-        })      
+        })
     }
     removeSelectedTasks = () => {
         let tasks = [...this.state.tasks]
         let removeTasks = new Set(this.state.removeTasks)
-        tasks = tasks.filter(el=>!removeTasks.has(el._id))
+        tasks = tasks.filter(el => !removeTasks.has(el._id))
         this.setState({
             tasks,
             removeTasks: new Set()
         })
     }
+    selectAllTasks = () =>{
+        let tasks = [...this.state.tasks]
+        let removeTasks = new Set(this.state.removeTasks)
+        for(let i=0; i<tasks.length; i++){
+            if(removeTasks.has(tasks[i]._id)){
+                removeTasks.delete(tasks[i]._id)
+            }
+            else{
+                removeTasks.add(tasks[i]._id)
+            }
+        }
+        this.setState({
+            tasks,
+            removeTasks
+        })
+    }
     removeAllTasks = () => {
         this.setState({
-            tasks:[]
+            tasks: []
         })
+
     }
     render(){
         const {tasks, removeTasks} = this.state
         const Tasks = tasks.map(task => {
             return (
-                <Col 
+                <Col
                     key={task._id}
                     className="d-flex justify-content-center mt-3"
                     xs={12}
                     md={6}
                     xl={3}
                 >
-                    <Task 
-                        task = {task} 
-                        handleDeleteOneTask = {this.handleDeleteOneTask}
-                        toggleSetRemoveTaskIds = {this.toggleSetRemoveTaskIds}
+                    <Task
+                        task={task}
+                        handleDeleteOneTask={this.handleDeleteOneTask}
+                        toggleSetRemoveTaskIds={this.toggleSetRemoveTaskIds}
                         disabled={!!removeTasks.size}
+                        checked={removeTasks.has(task._id)}
                     />
                 </Col>
             )
         })
-        return(
+        return (
             <div>
                 <Container>
                     <Row className="d-flex justify-content-center mt-4">
                         <Col>
                             <h1 className={styles.title}>To Do Component</h1>
-                            <AddNewTask 
+                            <AddNewTask
                                 handleSubmit={this.handleSubmit}
                                 disabled={!!removeTasks.size}
                             />
@@ -115,9 +133,16 @@ import { Container , Row , Col, Button } from 'react-bootstrap'
                         {Tasks}
                     </Row>
                     <Row className="d-flex justify-content-center">
-                        <Col>
+                        <Col className="mb-6">
+                            <Button 
+                                variant="info"
+                                className={!tasks.length ? 'd-none' : 'mr-3'}
+                                onClick={this.selectAllTasks}
+                            >
+                                Select All Tasks
+                            </Button>
                             <Button
-                                variant="danger" 
+                                variant="danger"
                                 className={!tasks.length && 'd-none'}
                                 onClick={this.removeSelectedTasks}
                                 disabled={!!!removeTasks.size}
@@ -136,8 +161,8 @@ import { Container , Row , Col, Button } from 'react-bootstrap'
                     </Row>
                 </Container>
             </div>
-           
-        )    
+
+        )
     }
 }
 
