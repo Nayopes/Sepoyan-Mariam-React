@@ -2,7 +2,7 @@ import React  from 'react'
 import Task from '../Task/Task'
 import AddNewTask from '../AddTask/AddNewTask'
 import styles from './todo.module.css'
-import RandomId from '../helpers/RandomId'
+import RandomId from '../../Helpers/RandomId'
 import {Container, Row, Col, Button} from 'react-bootstrap'
 
 class ToDo extends React.Component {
@@ -34,6 +34,7 @@ class ToDo extends React.Component {
             }
         ],
         removeTasks: new Set(),
+        isSelected: false
     }
     handleSubmit = (value) => {
         if (!value) return
@@ -74,19 +75,19 @@ class ToDo extends React.Component {
         })
     }
     selectAllTasks = () =>{
+        const {isSelected} = this.state
         let tasks = [...this.state.tasks]
-        let removeTasks = new Set(this.state.removeTasks)
-        for(let i=0; i<tasks.length; i++){
-            if(removeTasks.has(tasks[i]._id)){
-                removeTasks.delete(tasks[i]._id)
-            }
-            else{
-                removeTasks.add(tasks[i]._id)
-            }
+        let removeTasks = new Set()
+        if(!isSelected){
+            removeTasks = new Set(this.state.removeTasks)
+            for(let i=0; i<tasks.length; i++){
+                removeTasks.add(tasks[i]._id)   
+            } 
         }
         this.setState({
             tasks,
-            removeTasks
+            removeTasks, 
+            isSelected: !isSelected
         })
     }
     removeAllTasks = () => {
@@ -139,7 +140,7 @@ class ToDo extends React.Component {
                                 className={!tasks.length ? 'd-none' : 'mr-3'}
                                 onClick={this.selectAllTasks}
                             >
-                                Select All Tasks
+                                {this.state.isSelected ? 'Unselect All' : 'Select All Tasks'}
                             </Button>
                             <Button
                                 variant="danger"
