@@ -1,9 +1,11 @@
-import React  from 'react'
+import React from 'react'
 import Task from '../Task/Task'
 import AddNewTask from '../AddTask/AddNewTask'
+import ConfirmModal from '../ConfirmModal/ConfirmModal'
+import EditTaskModal from '../EditTaskModal/EditTaskModal'
 import styles from './todo.module.css'
 import RandomId from '../../Helpers/RandomId'
-import {Container, Row, Col, Button} from 'react-bootstrap'
+import { Container, Row, Col, Button } from 'react-bootstrap'
 
 class ToDo extends React.Component {
     state = {
@@ -34,14 +36,18 @@ class ToDo extends React.Component {
             }
         ],
         removeTasks: new Set(),
-        isSelected: false
+        isSelected: false,
+        isModalForSelectedOpen: false,
+        ismodalForAllOpen: false,
+        editingTask: null
     }
-    handleSubmit = (value) => {
-        if (!value) return
+    handleSubmit = (title, description) => {
+        if (!title || !description) return
         const tasks = [...this.state.tasks]
         tasks.push({
             _id: RandomId(),
-            title: value
+            title: title,
+            description: description
         })
         this.setState({
             tasks
@@ -74,30 +80,61 @@ class ToDo extends React.Component {
             removeTasks: new Set()
         })
     }
-    selectAllTasks = () =>{
-        const {isSelected} = this.state
+    selectAllTasks = () => {
+        const { isSelected } = this.state
         let tasks = [...this.state.tasks]
         let removeTasks = new Set()
-        if(!isSelected){
+        if (!isSelected) {
             removeTasks = new Set(this.state.removeTasks)
-            for(let i=0; i<tasks.length; i++){
-                removeTasks.add(tasks[i]._id)   
-            } 
+            for (let i = 0; i < tasks.length; i++) {
+                removeTasks.add(tasks[i]._id)
+            }
         }
         this.setState({
             tasks,
-            removeTasks, 
+            removeTasks,
             isSelected: !isSelected
         })
     }
-    removeAllTasks = () => {
+    removeAllTasks = () => {   
         this.setState({
-            tasks: []
+            tasks: [],
+            removeTasks: new Set()
         })
 
     }
-    render(){
-        const {tasks, removeTasks} = this.state
+    modalforSelected = () => {
+        this.setState({
+            isModalForSelectedOpen: !this.state.isModalForSelectedOpen
+
+        })
+    }
+    modalForAll = () =>{
+        this.setState({
+            ismodalForAllOpen: !this.state.ismodalForAllOpen
+
+        })
+    }
+    handleEditOneTask = (task) =>{
+        this.setState({
+            editingTask: task
+        })
+    }
+    editingTaskSetNull =() =>{
+        this.setState({
+            editingTask: null
+        })
+    }
+    editTask =(task) =>{
+        const tasks = [...this.state.tasks]
+        const i = tasks.findIndex(el=>el._id === task._id)
+        tasks[i] = task
+        this.setState({
+            tasks
+        })
+    }
+    render() {
+        const { tasks, removeTasks,isModalForSelectedOpen, ismodalForAllOpen, editingTask} = this.state
         const Tasks = tasks.map(task => {
             return (
                 <Col
@@ -113,56 +150,89 @@ class ToDo extends React.Component {
                         toggleSetRemoveTaskIds={this.toggleSetRemoveTaskIds}
                         disabled={!!removeTasks.size}
                         checked={removeTasks.has(task._id)}
+                        handleEditOneTask={this.handleEditOneTask}
                     />
                 </Col>
             )
         })
         return (
-            <div>
-                <Container>
-                    <Row className="d-flex justify-content-center mt-4">
-                        <Col>
-                            <h1 className={styles.title}>To Do Component</h1>
-                            <AddNewTask
-                                handleSubmit={this.handleSubmit}
-                                disabled={!!removeTasks.size}
-                            />
-                        </Col>
-                    </Row>
-                    <Row className="d-flex justify-content-center mt-4 mb-4">
-                        {!tasks.length && <div> Sorry, tasks are empty!</div>}
-                        {Tasks}
-                    </Row>
-                    <Row className="d-flex justify-content-center">
-                        <Col className="mb-6">
-                            <Button 
-                                variant="info"
-                                className={!tasks.length ? 'd-none' : 'mr-3'}
-                                onClick={this.selectAllTasks}
-                            >
-                                {this.state.isSelected ? 'Unselect All' : 'Select All Tasks'}
+            <>
+                <div>
+                    <Container>
+                        <Row className="d-flex justify-content-center mt-4">
+                            <Col>
+                                <h1 className={styles.title}>To Do Component</h1>
+                                <AddNewTask
+                                    handleSubmit={this.handleSubmit}
+                                    disabled={!!removeTasks.size}
+                                />
+                            </Col>
+                        </Row>
+                        <Row className="d-flex justify-content-center mt-4 mb-4">
+                            {!tasks.length && <div> Sorry, tasks are empty!</div>}
+                            {Tasks}
+                        </Row>
+                        <Row className="d-flex justify-content-center">
+                            <Col className="mb-6">
+                                <Button
+                                    variant="info"
+                                    className={!tasks.length ? 'd-none' : 'mr-3'}
+                                    onClick={this.selectAllTasks}
+                                >
+                                    {this.state.isSelected ? 'Unselect All' : 'Select All Tasks'}
+                                </Button>
+                                <Button
+                                    variant="danger"
+                                    className={!tasks.length && 'd-none'}
+                                    onClick={this.modalforSelected}
+                                    disabled={!!!removeTasks.size}
+                                >
+                                    Remove Selected
                             </Button>
-                            <Button
-                                variant="danger"
-                                className={!tasks.length && 'd-none'}
-                                onClick={this.removeSelectedTasks}
-                                disabled={!!!removeTasks.size}
-                            >
-                                Remove Selected
+                                <Button
+                                    variant="danger"
+                                    className={!tasks.length ? 'd-none' : 'ml-3'}
+                                    onClick={this.modalForAll}
+                                    disabled={!!removeTasks.size}
+                                >
+                                    Remove All Tasks
                             </Button>
-                            <Button
-                                variant="danger"
-                                className={!tasks.length ? 'd-none' : 'ml-3'}
-                                onClick={this.removeAllTasks}
-                                disabled={!!removeTasks.size}
-                            >
-                                Remove All Tasks
-                            </Button>
-                        </Col>
-                    </Row>
-                </Container>
-            </div>
-
+                            </Col>
+                        </Row>
+                    </Container>
+                </div>
+                <div>
+                    {
+                        isModalForSelectedOpen && <ConfirmModal
+                            onHide={this.modalforSelected}
+                            onClick={this.removeSelectedTasks}
+                            message = {
+                                `${removeTasks.size === tasks.length && tasks.length !== 1 ? 'All' : removeTasks.size} 
+                                ${removeTasks.size === 1 ? ' task ' : ' tasks '} 
+                                will be deleted. Are you sure?`
+                            }
+                        />
+                    }
+                </div>
+                <div>
+                    {
+                        ismodalForAllOpen && <ConfirmModal 
+                            onHide={this.modalForAll}
+                            onClick={this.removeAllTasks}
+                            message = {'All tasks will be deleted. Are you sure?'}
+                        />
+                    }
+                </div>
+                <div>
+                    {
+                        editingTask !== null && <EditTaskModal 
+                            onHide={this.editingTaskSetNull}
+                            onSubmit={this.editTask}
+                            editingTask={editingTask}
+                        />
+                    }
+                </div>
+            </>
         )
     }
 }

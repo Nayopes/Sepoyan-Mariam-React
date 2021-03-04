@@ -1,7 +1,7 @@
 import React from 'react'
 import {Card, Button} from 'react-bootstrap'
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
-import {faTrash , faEdit} from '@fortawesome/free-solid-svg-icons'
+import {faTrash, faEdit} from '@fortawesome/free-solid-svg-icons'
 import styles from './task.module.css'
 import PropTypes from 'prop-types'
 
@@ -11,7 +11,8 @@ class Task extends React.PureComponent{
             task, 
             handleDeleteOneTask, 
             toggleSetRemoveTaskIds, 
-            checked
+            handleEditOneTask,
+            checked,
         } = this.props
         return(
              <Card className={`${styles.card} ${checked && styles.checked}`}> 
@@ -30,7 +31,11 @@ class Task extends React.PureComponent{
                     >
                         <FontAwesomeIcon icon={faTrash} />
                     </Button>
-                    <Button variant="warning" className="ml-3">
+                    <Button 
+                    variant="warning" 
+                    className="ml-3"
+                    onClick = {() => handleEditOneTask(task)}
+                    >
                         <FontAwesomeIcon icon={faEdit} />
                     </Button>
                 </Card.Body>
@@ -47,7 +52,8 @@ Task.propTypes = {
     }),
     handleDeleteOneTask: PropTypes.func.isRequired,
     toggleSetRemoveTaskIds: PropTypes.func.isRequired,
-    checked: PropTypes.bool.isRequired
+    checked: PropTypes.bool.isRequired,
+    handleEditOneTask: PropTypes.func.isRequired,
 }
 
 export default Task
