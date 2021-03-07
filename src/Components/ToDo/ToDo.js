@@ -1,8 +1,7 @@
 import React from 'react'
 import Task from '../Task/Task'
-import AddNewTask from '../AddTask/AddNewTask'
 import ConfirmModal from '../ConfirmModal/ConfirmModal'
-import EditTaskModal from '../EditTaskModal/EditTaskModal'
+import TaskModal from '../TaskModal/TaskModal'
 import styles from './todo.module.css'
 import RandomId from '../../Helpers/RandomId'
 import { Container, Row, Col, Button } from 'react-bootstrap'
@@ -39,7 +38,8 @@ class ToDo extends React.Component {
         isSelected: false,
         isModalForSelectedOpen: false,
         ismodalForAllOpen: false,
-        editingTask: null
+        editingTask: null,
+        isModalForAddOpen: false
     }
     handleSubmit = (title, description) => {
         if (!title || !description) return
@@ -96,7 +96,7 @@ class ToDo extends React.Component {
             isSelected: !isSelected
         })
     }
-    removeAllTasks = () => {   
+    removeAllTasks = () => {
         this.setState({
             tasks: [],
             removeTasks: new Set()
@@ -109,32 +109,46 @@ class ToDo extends React.Component {
 
         })
     }
-    modalForAll = () =>{
+    modalForAll = () => {
         this.setState({
             ismodalForAllOpen: !this.state.ismodalForAllOpen
 
         })
     }
-    handleEditOneTask = (task) =>{
+    handleEditOneTask = (task) => {
         this.setState({
             editingTask: task
         })
     }
-    editingTaskSetNull =() =>{
+    editingTaskSetNull = () => {
         this.setState({
             editingTask: null
         })
     }
-    editTask =(task) =>{
+    editTask = (task) => {
         const tasks = [...this.state.tasks]
-        const i = tasks.findIndex(el=>el._id === task._id)
+        const i = tasks.findIndex(el => el._id === task._id)
         tasks[i] = task
         this.setState({
             tasks
         })
+
+    }
+    openAddModal = () => {
+        this.setState({
+            isModalForAddOpen: !this.state.isModalForAddOpen
+        })
     }
     render() {
-        const { tasks, removeTasks,isModalForSelectedOpen, ismodalForAllOpen, editingTask} = this.state
+        const {
+            tasks,
+            removeTasks,
+            isModalForSelectedOpen,
+            ismodalForAllOpen,
+            editingTask,
+            isModalForAddOpen
+        } = this.state
+
         const Tasks = tasks.map(task => {
             return (
                 <Col
@@ -162,10 +176,12 @@ class ToDo extends React.Component {
                         <Row className="d-flex justify-content-center mt-4">
                             <Col>
                                 <h1 className={styles.title}>To Do Component</h1>
-                                <AddNewTask
-                                    handleSubmit={this.handleSubmit}
-                                    disabled={!!removeTasks.size}
-                                />
+                                <Button
+                                    variant='info'
+                                    className='mt-4'
+                                    onClick={this.openAddModal}
+                                >Add Task
+                                </Button>
                             </Col>
                         </Row>
                         <Row className="d-flex justify-content-center mt-4 mb-4">
@@ -201,37 +217,42 @@ class ToDo extends React.Component {
                         </Row>
                     </Container>
                 </div>
-                <div>
-                    {
-                        isModalForSelectedOpen && <ConfirmModal
-                            onHide={this.modalforSelected}
-                            onClick={this.removeSelectedTasks}
-                            message = {
-                                `${removeTasks.size === tasks.length && tasks.length !== 1 ? 'All' : removeTasks.size} 
+                {
+                    isModalForSelectedOpen && <ConfirmModal
+                        onHide={this.modalforSelected}
+                        onClick={this.removeSelectedTasks}
+                        message={
+                            `${removeTasks.size === tasks.length && tasks.length !== 1 ? 'All' : removeTasks.size} 
                                 ${removeTasks.size === 1 ? ' task ' : ' tasks '} 
                                 will be deleted. Are you sure?`
-                            }
-                        />
-                    }
-                </div>
-                <div>
-                    {
-                        ismodalForAllOpen && <ConfirmModal 
-                            onHide={this.modalForAll}
-                            onClick={this.removeAllTasks}
-                            message = {'All tasks will be deleted. Are you sure?'}
-                        />
-                    }
-                </div>
-                <div>
-                    {
-                        editingTask !== null && <EditTaskModal 
-                            onHide={this.editingTaskSetNull}
-                            onSubmit={this.editTask}
-                            editingTask={editingTask}
-                        />
-                    }
-                </div>
+                        }
+                        buttonName={'Delete'}
+                    />
+                }
+                {
+                    ismodalForAllOpen && <ConfirmModal
+                        onHide={this.modalForAll}
+                        onClick={this.removeAllTasks}
+                        message={`${tasks.length === 1 ? '1 task ' : 'All tasks '} will be deleted. Are you sure?`}
+                        buttonName={'Delete'}
+                    />
+                }
+                {
+                    editingTask !== null && <TaskModal
+                        onHide={this.editingTaskSetNull}
+                        onSubmit={this.editTask}
+                        editingTask={editingTask}
+                        modalMessage={'Edit Task'}
+                    />
+                }
+                {
+                    isModalForAddOpen && <TaskModal
+                        onHide={this.openAddModal}
+                        onSubmit={this.handleSubmit}
+                        modalMessage={'Add Task'}
+                    />
+                }
+
             </>
         )
     }

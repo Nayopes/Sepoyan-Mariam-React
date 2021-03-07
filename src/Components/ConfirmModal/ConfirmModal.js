@@ -1,6 +1,6 @@
 import { Modal, Button } from 'react-bootstrap'
 const ConfirmModal = (props) => {
-    const {onHide, onClick, message} = props
+    const {onHide, onClick, message, buttonName} = props
     const onSubmit =() =>{
         onClick()
         onHide()
@@ -15,11 +15,10 @@ const ConfirmModal = (props) => {
                     Cancel
           </Button>
                 <Button variant="danger" onClick={onSubmit}>
-                    Delete
+                    {buttonName}
           </Button>
             </Modal.Footer>
         </Modal>
     )
 }
-
 export default ConfirmModal

@@ -1,43 +1,51 @@
 import React from 'react'
-import {Card, Button} from 'react-bootstrap'
-import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
-import {faTrash, faEdit} from '@fortawesome/free-solid-svg-icons'
+import { Card, Button } from 'react-bootstrap'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faTrash, faEdit, faArrowLeft } from '@fortawesome/free-solid-svg-icons'
 import styles from './task.module.css'
 import PropTypes from 'prop-types'
 
-class Task extends React.PureComponent{
-    render(){
+class Task extends React.PureComponent {
+    render() {
         const {
-            task, 
-            handleDeleteOneTask, 
-            toggleSetRemoveTaskIds, 
+            task,
+            handleDeleteOneTask,
+            toggleSetRemoveTaskIds,
             handleEditOneTask,
-            checked,
+            checked
         } = this.props
-        return(
-             <Card className={`${styles.card} ${checked && styles.checked}`}> 
+        return (
+            <Card className={`${styles.card} ${checked && styles.checked}`}>
                 <Card.Body>
-                    <input 
-                    type = "checkbox"
-                    checked = {!!checked}
-                    onChange ={()=>checked}
-                    onClick = {()=>toggleSetRemoveTaskIds(task._id)}
+                    <input
+                        type="checkbox"
+                        checked={!!checked}
+                        onChange={() => checked}
+                        onClick={() => toggleSetRemoveTaskIds(task._id)}
                     />
                     <Card.Title> {task.title} </Card.Title>
                     <Card.Text> {task.description} </Card.Text>
-                    <Button 
-                        variant="danger"
-                        onClick = {() => handleDeleteOneTask(task._id)}
+                    <Button
+                        variant="info"
+                        className="mr-3"
                     >
-                        <FontAwesomeIcon icon={faTrash} />
+                        <FontAwesomeIcon icon={faArrowLeft} />
                     </Button>
-                    <Button 
-                    variant="warning" 
-                    className="ml-3"
-                    onClick = {() => handleEditOneTask(task)}
+                    <Button
+                        variant="warning"
+                        className="mr-3"
+                        onClick={() => handleEditOneTask(task)}
                     >
                         <FontAwesomeIcon icon={faEdit} />
                     </Button>
+                    <Button
+                        variant="danger"
+                        onClick={() => handleDeleteOneTask(task._id)}
+                    >
+                        <FontAwesomeIcon icon={faTrash} />
+                    </Button>
+
+
                 </Card.Body>
             </Card>
         )
