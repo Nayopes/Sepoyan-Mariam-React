@@ -8,7 +8,7 @@ class TaskModal extends React.Component {
         this.myRef = React.createRef()
         this.state = {
             ...props.editingTask,
-            ...props.isModalForAddOpen,
+            ...props.isModalForAddOpen
         }
     }
     handleChange = (e) => {
