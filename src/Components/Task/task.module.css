@@ -1,12 +1,12 @@
-.card{
+.task{
     display: flex;
-    flex: column;
-    align-items: center;
+    flex-direction: column;
+    justify-content: space-between;
     width: 18rem;
     border: 2px solid white;
     border-radius: 8px;
-    background-color: rgba(92, 10, 48, 0.6) ;
-    color: rgb(247, 240, 243);
+    background-color: rgba(88, 8, 45, 0.6) ;
+    color: rgb(245, 243, 244);
 }
 .checked{
     opacity: .6;

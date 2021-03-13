@@ -3,37 +3,13 @@ import Task from '../Task/Task'
 import ConfirmModal from '../ConfirmModal/ConfirmModal'
 import TaskModal from '../TaskModal/TaskModal'
 import styles from './todo.module.css'
-import RandomId from '../../Helpers/RandomId'
+import DateFormat from '../../Helpers/DateFormat'
 import { Container, Row, Col, Button } from 'react-bootstrap'
+
 
 class ToDo extends React.Component {
     state = {
-        tasks: [
-            {
-                _id: RandomId(),
-                title: 'Albert Einstein',
-                description: `Albert Einstein (14 March 1879 – 18 April 1955) was a German-born theoretical physicist 
-                who developed the theory of relativity, one of the two pillars of modern physics. 
-                He is best known to the general public for his mass–energy equivalence formula. 
-                `
-            },
-            {
-                _id: RandomId(),
-                title: 'Marie Curie',
-                description: `Marie Curie (7 November 1867 – 4 July 1934), was a Polish and French physicist and chemist. 
-                She was the first woman to win a Nobel Prize, the only woman to win it twice, 
-                the first and the only person to win the Nobel Prize in two scientific fields.
-                `
-            },
-            {
-                _id: RandomId(),
-                title: 'Nikola Tesla',
-                description: `Nikola Tesla (10 July 1856 – 7 January 1943) was a Serbian-American inventor, 
-                electrical engineer, mechanical engineer and futurist best known for his contributions to the design 
-                of the modern alternating current (AC) electricity supply system.
-                `
-            }
-        ],
+        tasks: [],
         removeTasks: new Set(),
         isSelected: false,
         isModalForSelectedOpen: false,
@@ -41,17 +17,30 @@ class ToDo extends React.Component {
         editingTask: null,
         isModalForAddOpen: false
     }
-    handleSubmit = (title, description) => {
-        if (!title || !description) return
+    handleSubmit = (formData) => {
+        if (!formData.title || !formData.description) return
         const tasks = [...this.state.tasks]
-        tasks.push({
-            _id: RandomId(),
-            title: title,
-            description: description
+        formData.date = DateFormat(formData.date)
+        fetch('http://localhost:3001/task', {
+            method: 'POST',
+            body: JSON.stringify(formData),
+            headers: {
+                'Content-Type': 'Application/json'
+            }
         })
-        this.setState({
-            tasks
-        })
+            .then(res => res.json())
+            .then(data => {
+                if (data.error) {
+                    throw data.error
+                }
+                tasks.push(data)
+                this.setState({
+                    tasks
+                })
+            })
+            .catch(error => {
+                console.log(error)
+            })
     }
     handleDeleteOneTask = (id) => {
         let tasks = [...this.state.tasks]
@@ -72,13 +61,29 @@ class ToDo extends React.Component {
         })
     }
     removeSelectedTasks = () => {
-        let tasks = [...this.state.tasks]
-        let removeTasks = new Set(this.state.removeTasks)
-        tasks = tasks.filter(el => !removeTasks.has(el._id))
-        this.setState({
-            tasks,
-            removeTasks: new Set()
+        fetch('http://localhost:3001/task', {
+            method: 'PATCH',
+            body: JSON.stringify({ tasks: Array.from(this.state.removeTasks) }),
+            headers: {
+                'Content-Type': 'Application/json'
+            }
         })
+            .then(res => res.json())
+            .then(data => {
+                if (data.error) {
+                    throw data.error
+                }
+                let tasks = [...this.state.tasks]
+                let removeTasks = new Set(this.state.removeTasks)
+                tasks = tasks.filter(el => !removeTasks.has(el._id))
+                this.setState({
+                    tasks,
+                    removeTasks: new Set()
+                })
+            })
+            .catch(error => {
+                console.error('Error', error)
+            })
     }
     selectAllTasks = () => {
         const { isSelected } = this.state
@@ -97,11 +102,20 @@ class ToDo extends React.Component {
         })
     }
     removeAllTasks = () => {
-        this.setState({
-            tasks: [],
-            removeTasks: new Set()
-        })
-
+        fetch("http://localhost:3001/task")
+            .then(res => res.json())
+            .then(data => {
+                if (data.error) {
+                    throw data.error
+                }
+                this.setState({
+                    tasks: [],
+                    removeTasks: new Set()
+                })
+            })
+            .catch(error => {
+                console.error('Error', error)
+            })
     }
     modalforSelected = () => {
         this.setState({
@@ -125,10 +139,10 @@ class ToDo extends React.Component {
             editingTask: null
         })
     }
-    editTask = (task) => {
+    editTask = (editTask) => {
         const tasks = [...this.state.tasks]
-        const i = tasks.findIndex(el => el._id === task._id)
-        tasks[i] = task
+        const i = tasks.findIndex(el => el._id === editTask._id)
+        tasks[i] = editTask
         this.setState({
             tasks
         })
@@ -138,6 +152,22 @@ class ToDo extends React.Component {
         this.setState({
             isModalForAddOpen: !this.state.isModalForAddOpen
         })
+    }
+    componentDidMount() {
+        fetch("http://localhost:3001/task")
+            .then(res => res.json())
+            .then(data => {
+                if (data.error) {
+                    throw data.error
+                }
+                this.setState({
+                    tasks: data
+                })
+            })
+            .catch(error => {
+                console.error("Get Tasks Request Error", error)
+
+            })
     }
     render() {
         const {
@@ -256,6 +286,7 @@ class ToDo extends React.Component {
             </>
         )
     }
+
 }
 
 export default ToDo

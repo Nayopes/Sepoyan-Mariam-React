@@ -4,6 +4,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faTrash, faEdit, faArrowLeft } from '@fortawesome/free-solid-svg-icons'
 import styles from './task.module.css'
 import PropTypes from 'prop-types'
+import DateFormat from '../../Helpers/DateFormat'
 
 class Task extends React.PureComponent {
     render() {
@@ -15,7 +16,7 @@ class Task extends React.PureComponent {
             checked
         } = this.props
         return (
-            <Card className={`${styles.card} ${checked && styles.checked}`}>
+            <Card className={`${styles.task} ${checked && styles.checked}`}>
                 <Card.Body>
                     <input
                         type="checkbox"
@@ -25,6 +26,8 @@ class Task extends React.PureComponent {
                     />
                     <Card.Title> {task.title} </Card.Title>
                     <Card.Text> {task.description} </Card.Text>
+                    <Card.Text> Date of birth:   {DateFormat(task.date)} </Card.Text>
+                    <Card.Text> Created at:   {DateFormat(task.created_at)} </Card.Text>
                     <Button
                         variant="info"
                         className="mr-3"
