@@ -1,0 +1,16 @@
+.singleTask{
+    width: 40%;
+    padding: 20px;
+    border-radius: 15px;
+    box-shadow: 0px 15px 30px 5px rgb(88, 78, 90);
+}
+.box{
+    height: 60vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+h3{
+    color: rgba(65, 3, 41, 0.918);
+    font-weight: bold;
+}

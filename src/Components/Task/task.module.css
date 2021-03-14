@@ -5,11 +5,14 @@
     width: 18rem;
     border: 2px solid white;
     border-radius: 8px;
-    background-color: rgba(105, 13, 67, 0.671) ;
+    background-color: rgba(128, 25, 97, 0.616) ;
     color: rgb(245, 243, 244);
 }
 .checked{
     opacity: .6;
     transform: scale(.97);
     color: rgb(196, 196, 196);
+}
+.title{
+    color: rgb(243, 239, 243);
 }

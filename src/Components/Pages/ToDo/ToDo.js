@@ -39,7 +39,7 @@ class ToDo extends React.Component {
                 })
             })
             .catch(error => {
-                console.log(error)
+                console.error(`Can't get tasks ${error}`)
             })
     }
     handleDeleteOneTask = (id) => {
@@ -58,7 +58,7 @@ class ToDo extends React.Component {
                 })
             })
             .catch(error => {
-                console.log(error)
+                console.error(`Can't delete a task ${error}`)
             })
 
     }
@@ -95,7 +95,7 @@ class ToDo extends React.Component {
                 })
             })
             .catch(error => {
-                console.error('Error', error)
+                console.error(`Can't delete selected tasks ${error}`)
             })
     }
     selectAllTasks = () => {
@@ -127,7 +127,7 @@ class ToDo extends React.Component {
                 })
             })
             .catch(error => {
-                console.error('Error', error)
+                console.error(`Can't delete all tasks ${error}`)
             })
     }
     modalforSelected = () => {
@@ -173,7 +173,7 @@ class ToDo extends React.Component {
                 })
             })
             .catch(error => {
-                console.log(error)
+                console.error(`Can't edit a task ${error}`)
             })
 
     }
@@ -195,7 +195,7 @@ class ToDo extends React.Component {
                 })
             })
             .catch(error => {
-                console.error("Get Tasks Request Error", error)
+                console.error(`Can't get tasks ${error}`)
 
             })
     }

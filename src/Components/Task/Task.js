@@ -5,6 +5,7 @@ import { faTrash, faEdit, faArrowLeft } from '@fortawesome/free-solid-svg-icons'
 import styles from './task.module.css'
 import PropTypes from 'prop-types'
 import DateFormat from '../../Helpers/DateFormat'
+import { Link } from 'react-router-dom'
 
 class Task extends React.PureComponent {
     render() {
@@ -24,7 +25,11 @@ class Task extends React.PureComponent {
                         onChange={() => checked}
                         onClick={() => toggleSetRemoveTaskIds(task._id)}
                     />
-                    <Card.Title> {task.title} </Card.Title>
+                    <Card.Title className={styles.title}>
+                        <Link to={`/task/${task._id}`} className={styles.title}>
+                            {task.title}
+                        </Link>
+                    </Card.Title>
                     <Card.Text> {task.description} </Card.Text>
                     <Card.Text> Date of birth:   {DateFormat(task.date)} </Card.Text>
                     <Card.Text> Created at:   {DateFormat(task.created_at)} </Card.Text>
