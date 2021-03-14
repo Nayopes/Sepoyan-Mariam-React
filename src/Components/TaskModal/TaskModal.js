@@ -2,6 +2,7 @@ import React from 'react'
 import { Modal, Button, Form } from 'react-bootstrap'
 import PropTypes from 'prop-types'
 import DatePicker from "react-datepicker"
+import DateFormat from '../../Helpers/DateFormat'
 
 class TaskModal extends React.Component {
     constructor(props) {
@@ -20,15 +21,12 @@ class TaskModal extends React.Component {
         })
     }
     handleS = ({ type, key }) => {
-        const { title, description, date } = this.state
+        const { title, description } = this.state
         if ((type === 'keypress' && key !== 'Enter') || (!title || !description)) return
         const { onSubmit, onHide } = this.props
-        const formData = {
-            title,
-            description,
-            date
-        }
-        onSubmit(formData && this.state)
+        const formData = this.state
+        formData.date = DateFormat(formData.date)
+        onSubmit(formData)
         onHide()
     }
     componentDidMount() {

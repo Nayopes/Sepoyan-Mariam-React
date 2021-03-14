@@ -1,9 +1,9 @@
 import React from 'react'
-import Task from '../Task/Task'
-import ConfirmModal from '../ConfirmModal/ConfirmModal'
-import TaskModal from '../TaskModal/TaskModal'
+import Task from '../../Task/Task'
+import ConfirmModal from '../../ConfirmModal/ConfirmModal'
+import TaskModal from '../../TaskModal/TaskModal'
 import styles from './todo.module.css'
-import DateFormat from '../../Helpers/DateFormat'
+import DateFormat from '../../../Helpers/DateFormat'
 import { Container, Row, Col, Button } from 'react-bootstrap'
 
 
@@ -43,11 +43,24 @@ class ToDo extends React.Component {
             })
     }
     handleDeleteOneTask = (id) => {
-        let tasks = [...this.state.tasks]
-        tasks = tasks.filter(el => el._id !== id)
-        this.setState({
-            tasks
+        fetch('http://localhost:3001/task/' + id, {
+            method: 'DELETE'
         })
+            .then(res => res.json())
+            .then(data => {
+                if (data.error) {
+                    throw data.error
+                }
+                let tasks = [...this.state.tasks]
+                tasks = tasks.filter(el => el._id !== id)
+                this.setState({
+                    tasks
+                })
+            })
+            .catch(error => {
+                console.log(error)
+            })
+
     }
     toggleSetRemoveTaskIds = (_id) => {
         let removeTasks = new Set(this.state.removeTasks)
@@ -140,14 +153,31 @@ class ToDo extends React.Component {
         })
     }
     editTask = (editTask) => {
-        const tasks = [...this.state.tasks]
-        const i = tasks.findIndex(el => el._id === editTask._id)
-        tasks[i] = editTask
-        this.setState({
-            tasks
+        fetch('http://localhost:3001/task/' + editTask._id, {
+            method: 'PUT',
+            body: JSON.stringify(editTask),
+            headers: {
+                'Content-Type': 'Application/json'
+            }
         })
+            .then(res => res.json())
+            .then(data => {
+                if (data.error) {
+                    throw data.error
+                }
+                const tasks = [...this.state.tasks]
+                const i = tasks.findIndex(el => el._id === data._id)
+                tasks[i] = data
+                this.setState({
+                    tasks
+                })
+            })
+            .catch(error => {
+                console.log(error)
+            })
 
     }
+
     openAddModal = () => {
         this.setState({
             isModalForAddOpen: !this.state.isModalForAddOpen
