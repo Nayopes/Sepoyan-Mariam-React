@@ -5,6 +5,7 @@ import TaskModal from '../../TaskModal/TaskModal'
 import styles from './todo.module.css'
 import DateFormat from '../../../Helpers/DateFormat'
 import { Container, Row, Col, Button } from 'react-bootstrap'
+import Loading from '../../Loading/Loading'
 
 
 class ToDo extends React.Component {
@@ -15,10 +16,12 @@ class ToDo extends React.Component {
         isModalForSelectedOpen: false,
         ismodalForAllOpen: false,
         editingTask: null,
-        isModalForAddOpen: false
+        isModalForAddOpen: false,
+        isLoaded: false
     }
     handleSubmit = (formData) => {
         if (!formData.title || !formData.description) return
+        this.setState({isLoaded: true})
         const tasks = [...this.state.tasks]
         formData.date = DateFormat(formData.date)
         fetch('http://localhost:3001/task', {
@@ -41,8 +44,14 @@ class ToDo extends React.Component {
             .catch(error => {
                 console.error(`Can't get tasks ${error}`)
             })
+            .finally(()=>{
+                this.setState({
+                    isLoaded: false
+                })
+            })
     }
     handleDeleteOneTask = (id) => {
+        this.setState({isLoaded: true})
         fetch('http://localhost:3001/task/' + id, {
             method: 'DELETE'
         })
@@ -60,7 +69,11 @@ class ToDo extends React.Component {
             .catch(error => {
                 console.error(`Can't delete a task ${error}`)
             })
-
+            .finally(()=>{
+                this.setState({
+                    isLoaded: false
+                })
+            })
     }
     toggleSetRemoveTaskIds = (_id) => {
         let removeTasks = new Set(this.state.removeTasks)
@@ -74,6 +87,7 @@ class ToDo extends React.Component {
         })
     }
     removeSelectedTasks = () => {
+        this.setState({isLoaded: true})
         fetch('http://localhost:3001/task', {
             method: 'PATCH',
             body: JSON.stringify({ tasks: Array.from(this.state.removeTasks) }),
@@ -96,6 +110,11 @@ class ToDo extends React.Component {
             })
             .catch(error => {
                 console.error(`Can't delete selected tasks ${error}`)
+            })
+            .finally(()=>{
+                this.setState({
+                    isLoaded: false
+                })
             })
     }
     selectAllTasks = () => {
@@ -153,6 +172,7 @@ class ToDo extends React.Component {
         })
     }
     editTask = (editTask) => {
+        this.setState({isLoaded: true})
         fetch('http://localhost:3001/task/' + editTask._id, {
             method: 'PUT',
             body: JSON.stringify(editTask),
@@ -175,6 +195,11 @@ class ToDo extends React.Component {
             .catch(error => {
                 console.error(`Can't edit a task ${error}`)
             })
+            .finally(()=>{
+                this.setState({
+                    isLoaded: false
+                })
+            })
 
     }
 
@@ -184,6 +209,7 @@ class ToDo extends React.Component {
         })
     }
     componentDidMount() {
+        this.setState({isLoaded: true})
         fetch("http://localhost:3001/task")
             .then(res => res.json())
             .then(data => {
@@ -196,7 +222,11 @@ class ToDo extends React.Component {
             })
             .catch(error => {
                 console.error(`Can't get tasks ${error}`)
-
+            })
+            .finally(()=>{
+                this.setState({
+                    isLoaded: false
+                })
             })
     }
     render() {
@@ -206,8 +236,11 @@ class ToDo extends React.Component {
             isModalForSelectedOpen,
             ismodalForAllOpen,
             editingTask,
-            isModalForAddOpen
+            isModalForAddOpen,
+            isLoaded
         } = this.state
+
+        if (isLoaded) return <Loading />
 
         const Tasks = tasks.map(task => {
             return (

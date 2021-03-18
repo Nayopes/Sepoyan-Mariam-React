@@ -3,28 +3,19 @@ import styles from './singletask.module.css'
 import DateFormat from '../../../Helpers/DateFormat'
 import { Button } from 'react-bootstrap'
 import PropTypes from 'prop-types'
+import TaskModal from '../../TaskModal/TaskModal'
+import NotFound from '../NotFound/NotFound'
+import Loading from '../../Loading/Loading'
 
 class SingleTask extends React.Component {
     state = {
-        singleTask: null
-    }
-    componentDidMount() {
-        const id = this.props.match.params.id
-        fetch(`http://localhost:3001/task/${id}`)
-            .then(res => res.json())
-            .then(data => {
-                if (data.error) {
-                    throw data.error
-                }
-                this.setState({
-                    singleTask: data
-                })
-            })
-            .catch(error => {
-                console.error(`Can't get a single task ${error}`)
-            })
+        singleTask: null,
+        isEdited: false,
+        isLoaded: false,
+        esError: false
     }
     deleteSingleTask = () => {
+        this.setState({ isLoaded: true })
         const id = this.props.match.params.id
         fetch(`http://localhost:3001/task/${id}`, {
             method: 'DELETE'
@@ -36,21 +27,77 @@ class SingleTask extends React.Component {
                 }
                 this.props.history.push('/')
             })
-            .catch(error=>{
+            .catch(error => {
                 console.error(`Can't delete this task ${error}`)
+            })
+            .finally(() => {
+                this.setState({
+                    isLoaded: false
+                })
             })
     }
     goBackOneStep = () => {
         this.props.history.goBack()
     }
+    editedTask = () => {
+        this.setState({
+            isEdited: !this.state.isEdited
+        })
+    }
+    saveEditedTask = (formData) => {
+        this.setState({ isLoaded: true })
+        fetch(`http://localhost:3001/task/${formData._id}`, {
+            method: 'PUT',
+            body: JSON.stringify(formData),
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+            .then(res => res.json())
+            .then(data => {
+                if (data.error) {
+                    throw data.error
+                }
+                this.setState({
+                    singleTask: data
+                })
+            })
+            .catch(error => {
+                console.log(`Can't edit single task! ${error}`)
+            })
+            .finally(() => {
+                this.setState({
+                    isLoaded: false
+                })
+            })
+    }
+    componentDidMount() {
+        const id = this.props.match.params.id
+        fetch(`http://localhost:3001/task/${id}`)
+            .then(res => res.json())
+            .then(data => {
+                if (data.error) {
+                    this.setState({ isError: true })
+                    throw data.error
+                }
+                this.setState({
+                    singleTask: data
+                })
+            })
+            .catch(error => {
+                console.error(`Can't get a single task ${error}`)
+            })
+    }
     render() {
-        const { singleTask } = this.state
-        if (!singleTask) {
-            return <div>
-                <p>...Loading</p>
-            </div>
-        }
+        const { singleTask, isEdited, isError } = this.state
+        if (isError) return <NotFound />
+        if (!singleTask) return <Loading />
+        if (this.state.isLoaded) return <Loading />
+
+
+
         return (
+
             <div className={styles.box}>
                 <div className={styles.singleTask}>
                     <h3>{singleTask.title}</h3>
@@ -66,6 +113,7 @@ class SingleTask extends React.Component {
                 </Button>
                         <Button className='mr-3'
                             style={{ backgroundColor: 'rgba(54, 110, 161, 0.8)', border: '0' }}
+                            onClick={this.editedTask}
                         >
                             Edit
                 </Button>
@@ -76,13 +124,21 @@ class SingleTask extends React.Component {
                             Delete
                 </Button>
                     </div>
+                    {
+                        isEdited && <TaskModal
+                            onHide={this.editedTask}
+                            onSubmit={this.saveEditedTask}
+                            editingTask={singleTask}
+                            modalMessage={'Edit Task'}
+                        />
+                    }
                 </div>
             </div>
         )
     }
 }
-SingleTask.propTypes={
-    deleteSingleTask: PropTypes.func.isRequired,
-    goBackOneStep: PropTypes.func.isRequired
+SingleTask.propTypes = {
+    deleteSingleTask: PropTypes.func,
+    goBackOneStep: PropTypes.func
 }
 export default SingleTask
