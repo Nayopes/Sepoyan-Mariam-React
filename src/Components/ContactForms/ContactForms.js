@@ -46,18 +46,18 @@ class ContactForms extends React.Component {
             [name]: value
         })
     }
-    sendMessage=()=>{
+    sendMessage = () => {
         fetch('http://localhost:3001/form', {
             method: 'POST',
             body: JSON.stringify(this.state),
-            headers:{
-                'Content-Type':'application/json'
+            headers: {
+                'Content-Type': 'application/json'
             }
         })
-        .then(res=>res.json())
-        .then(data=>{
-            return data
-        })
+            .then(res => res.json())
+            .then(data => {
+                return data
+            })
     }
     componentDidMount() {
         this.myRef.current.focus()
