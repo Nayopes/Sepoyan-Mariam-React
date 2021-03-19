@@ -1,0 +1,24 @@
+.mainDiv{
+    height: 80vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.contactDiv{
+    width: 50%;
+    margin: 0 auto;
+    box-shadow: 0px 15px 40px 10px rgb(88, 78, 90);
+    border-radius: 15px;
+    padding: 40px;
+}
+.contactTitle{
+    width: 65%;
+    margin: 0 auto;
+    background-color: rgba(161, 91, 150, 0.863);
+    color: rgb(255, 244, 254);
+    border-radius: 0.5em;
+}
+.formDiv{
+    width: 65%;
+    margin: 0 auto;
+}
