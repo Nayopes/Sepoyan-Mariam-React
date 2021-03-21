@@ -1,6 +1,8 @@
 import React from 'react'
 import styles from './contactforms.module.css'
 import { Form, Button } from 'react-bootstrap'
+import { withRouter } from 'react-router-dom'
+import { isRequired, minLength, maxLength, emailValidation, isAllValidation } from "../../Helpers/ValidationChecker";
 
 const formsArr = [
     {
@@ -14,7 +16,7 @@ const formsArr = [
         name: 'email',
         controlId: 'formBasicEmail',
         label: 'Email',
-        type: 'email',
+        type: 'text',
         placeholder: 'example@example.com'
     },
     {
@@ -35,29 +37,83 @@ class ContactForms extends React.Component {
         super(props)
         this.myRef = React.createRef()
         this.state = {
-            name: '',
-            email: '',
-            message: ''
+            name: {
+                value: '',
+                isValid: false,
+                isError: null
+            },
+            email: {
+                value: '',
+                isValid: false,
+                isError: null
+            },
+            message: {
+                value: '',
+                isValid: false,
+                isError: null
+            },
+            messageForError: '',
+            isAllValid: false
         }
     }
     handleOnChange = (e) => {
         const { name, value } = e.target
+        let isValid = false
+        let isError = null
+        if (isRequired(value)) {
+            isValid = !!!isError
+            isError = isRequired(value)
+        }
+        else if (name === 'email' && emailValidation(value)) {
+            isValid = !!!isError
+            isError = emailValidation(value)
+        }
+        else if (minLength(3)(value) && name !== 'message') {
+            isValid = !!!isError
+            isError = minLength(3)(value)
+        }
+        else if (maxLength(value) && name !== 'message') {
+            isValid = !!!isError
+            isError = maxLength(30)(value)
+        }
         this.setState({
-            [name]: value
+            [name]: {
+                value,
+                isValid,
+                isError
+            },
+            isAllValid: !isAllValidation(this.state)
         })
     }
     sendMessage = () => {
+        const formData = { ...this.state }
+        delete (formData.messageForError)
+        for (let key in formData) {
+            formData[key] = formData[key].value
+        }
         fetch('http://localhost:3001/form', {
             method: 'POST',
-            body: JSON.stringify(this.state),
+            body: JSON.stringify(formData),
             headers: {
                 'Content-Type': 'application/json'
             }
         })
             .then(res => res.json())
             .then(data => {
+                if (data.error) {
+                    throw data.error
+                }
+                this.props.history.push('/')
                 return data
             })
+            .catch(error => {
+                this.setState({
+                    messageForError: `${error.message[6].toUpperCase() + error.message.slice(7, error.message.length - 1)}!!!`
+                })
+            })
+    }
+    dontReload = (e) => {
+        return e.preventDefault()
     }
     componentDidMount() {
         this.myRef.current.focus()
@@ -77,20 +133,22 @@ class ContactForms extends React.Component {
                         placeholder={el.placeholder}
                         {...el.forMessage}
                         ref={index === 0 ? this.myRef : null}
-                        value={this.state[el.name]}
+                        value={this.state[el.name].value}
                         onChange={this.handleOnChange}
                     />
+                    <Form.Text style={{ color: 'rgb(231, 58, 194)' }}>{this.state[el.name].isError}</Form.Text>
                 </Form.Group>
             )
         })
         return (
             <div>
-                <Form>
+                <Form onSubmit={this.dontReload}>
+                    <p className={styles.error}>{this.state.messageForError}</p>
                     {formsItems}
                     <Button
                         variant="info"
                         type="submit"
-                        disabled={!this.state.name || !this.state.email}
+                        disabled={!this.state.isAllValid}
                         onClick={this.sendMessage}
                     >
                         Send
@@ -100,4 +158,4 @@ class ContactForms extends React.Component {
         )
     }
 }
-export default ContactForms
+export default withRouter(ContactForms)

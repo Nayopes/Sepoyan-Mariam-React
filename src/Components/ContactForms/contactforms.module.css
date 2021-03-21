@@ -4,3 +4,7 @@
     font-size: 1.2em;
     color: rgba(87, 41, 81, 0.884);
 }
+.error{
+    color: rgba(187, 75, 172, 0.89);
+    font-size: 120%;
+}
