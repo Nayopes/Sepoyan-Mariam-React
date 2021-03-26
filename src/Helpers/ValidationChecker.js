@@ -10,7 +10,7 @@ export function minLength(length) {
 
 export function maxLength(length) {
     return function (value) {
-        return value.length <= length ? undefined : 'Field should contain not more than 20 signs.'
+        return value.length <= length ? undefined : 'Field should contain not more than 30 signs.'
     }
 }
 
@@ -26,10 +26,11 @@ export function emailValidation(email) {
     return 'Please enter a valid email.'
 }
 
-export function isAllValidation(formData) {
-    for (let key in formData) {
-        if (formData[key].valid)
-            return true
-    }
-    return false
+export function abuseMessageValidator(message) {
+    message = message.toLowerCase()
+    if( message.includes('fuck') || message.includes('shit') || message.includes('crap')){
+        return 'Please watch your mouth!'
+    }else{
+        return undefined
+    }   
 }

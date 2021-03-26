@@ -1,6 +1,7 @@
 import React from 'react'
-import ContactForms from '../../ContactForms/ContactForms'
+//import ContactForms from '../../ContactForms/ContactForms'
 import styles from './contact.module.css'
+import ContactFormWithHooks from '../../ContactForms/ContactFormWithHooks'
 
 class Contact extends React.Component {
     render() {
@@ -11,7 +12,8 @@ class Contact extends React.Component {
                         <h1>Contact with us</h1>
                     </div>
                     <div className={styles.formDiv}>
-                        < ContactForms />
+                        {/* < ContactForms /> */}
+                        <ContactFormWithHooks />
                     </div>
                 </div>
             </div>

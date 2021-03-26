@@ -2,7 +2,7 @@ import React from 'react'
 import styles from './contactforms.module.css'
 import { Form, Button } from 'react-bootstrap'
 import { withRouter } from 'react-router-dom'
-import { isRequired, minLength, maxLength, emailValidation, isAllValidation } from "../../Helpers/ValidationChecker";
+import { isRequired, minLength, maxLength, emailValidation, abuseMessageValidator} from "../../Helpers/ValidationChecker";
 
 const formsArr = [
     {
@@ -52,37 +52,31 @@ class ContactForms extends React.Component {
                 isValid: false,
                 isError: null
             },
-            messageForError: '',
-            isAllValid: false
+            messageForError: ''
         }
     }
     handleOnChange = (e) => {
         const { name, value } = e.target
-        let isValid = false
         let isError = null
-        if (isRequired(value)) {
-            isValid = !!!isError
-            isError = isRequired(value)
+        switch (name) {
+            case "name":
+            case "email":
+            case "message":
+                isError = isRequired(value) ||
+                    (name === "email" && emailValidation(value)) ||
+                    minLength(3)(value) ||
+                    maxLength(30)(value) ||
+                    (name=== 'message' && abuseMessageValidator(value)) 
+                break
+            default: 
         }
-        else if (name === 'email' && emailValidation(value)) {
-            isValid = !!!isError
-            isError = emailValidation(value)
-        }
-        else if (minLength(3)(value) && name !== 'message') {
-            isValid = !!!isError
-            isError = minLength(3)(value)
-        }
-        else if (maxLength(value) && name !== 'message') {
-            isValid = !!!isError
-            isError = maxLength(30)(value)
-        }
+       
         this.setState({
             [name]: {
                 value,
-                isValid,
+                isValid: !!!isError,
                 isError
-            },
-            isAllValid: !isAllValidation(this.state)
+            }
         })
     }
     sendMessage = () => {
@@ -119,6 +113,7 @@ class ContactForms extends React.Component {
         this.myRef.current.focus()
     }
     render() {
+        const isAllValid = this.state.name.isValid && this.state.email.isValid && this.state.message.isValid
         const formsItems = formsArr.map((el, index) => {
             return (
                 <Form.Group
@@ -148,7 +143,7 @@ class ContactForms extends React.Component {
                     <Button
                         variant="info"
                         type="submit"
-                        disabled={!this.state.isAllValid}
+                        disabled={!isAllValid}
                         onClick={this.sendMessage}
                     >
                         Send
