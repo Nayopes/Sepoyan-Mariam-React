@@ -7,6 +7,7 @@ import Contact from './Components/Pages/Contact/Contact'
 import About from './Components/Pages/About/About'
 import NotFound from './Components/Pages/NotFound/NotFound'
 import SingleTask from './Components/Pages/SingleTask/SingleTask'
+import ContactContextProvider from './Context/ContactContext'
 
 const pages = [
   {
@@ -32,12 +33,27 @@ const pages = [
 ]
 function App() {
   const pagesItmes = pages.map((el, index) => {
-    return <Route
+    if (el.path === '/contact') {
+      return <Route
+        key={index}
+        path={el.path}
+        exact
+        render={(props) => {
+          return (
+            <ContactContextProvider>
+              {<el.component {...props} />}
+            </ContactContextProvider>
+          )
+        }
+        }
+      />
+    } return <Route
       key={index}
       path={el.path}
       component={el.component}
       exact
     />
+
   })
   return (
     <div className="App">
