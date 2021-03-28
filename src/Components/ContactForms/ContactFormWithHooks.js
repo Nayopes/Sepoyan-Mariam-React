@@ -36,7 +36,7 @@ const ContactFormWithHooks = () => {
     const context = useContext(ContactContext)
     useEffect(() => {
         myRef.current.focus()
-    })
+    },[])
     const { formData, messageForError, handleOnChange, sendMessage } = context
     const isAllValid = formData.name.isValid && formData.email.isValid && formData.message.isValid
     const dontReload = (e) => {
@@ -55,7 +55,7 @@ const ContactFormWithHooks = () => {
                     type={el.type}
                     placeholder={el.placeholder}
                     as={el.as}
-                    ref={!index ? myRef : null}
+                    ref={!!!index ? myRef : null}
                     value={formData[el.name].value}
                     onChange={handleOnChange}
                 />
