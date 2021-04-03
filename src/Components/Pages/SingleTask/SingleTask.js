@@ -30,7 +30,7 @@ const reducer = (state, action) => {
                 ...state,
                 isError: action.isError
             }
-        case 'getSingleTask':
+        case 'setSingleTask':
             return {
                 ...state,
                 singleTask: action.singleTask
@@ -53,7 +53,7 @@ const SingleTask = (props) => {
                     dispatch({ type: 'errorOnOff', isError: true })
                     throw data.error
                 }
-                dispatch({ type: 'getSingleTask', singleTask: data })
+                dispatch({ type: 'setSingleTask', singleTask: data })
                 dispatch({ type: 'loadingOnOff', isLoaded: false })
             })
             .catch(error => {
@@ -94,7 +94,7 @@ const SingleTask = (props) => {
                 if (data.error) {
                     throw data.error
                 }
-                dispatch({ type: 'getSingleTask', singleTask: data })
+                dispatch({ type: 'setSingleTask', singleTask: data })
             })
             .catch(error => {
                 console.log(`Can't edit single task! ${error}`)
