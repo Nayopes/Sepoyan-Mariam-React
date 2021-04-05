@@ -10,7 +10,6 @@ class TaskModal extends React.Component {
         this.myRef = React.createRef()
         this.state = {
             ...props.editingTask,
-            ...props.isModalForAddOpen,
             date: props.editingTask ? new Date(props.editingTask.date) : new Date(),
         }
     }
