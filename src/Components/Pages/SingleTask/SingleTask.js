@@ -1,4 +1,5 @@
-import { useReducer, useEffect } from 'react'
+import { useEffect } from 'react'
+import { withRouter } from 'react-router-dom'
 import styles from './singletask.module.css'
 import DateFormat from '../../../Helpers/DateFormat'
 import { Button } from 'react-bootstrap'
@@ -6,108 +7,30 @@ import PropTypes from 'prop-types'
 import TaskModal from '../../TaskModal/TaskModal'
 import NotFound from '../NotFound/NotFound'
 import Loading from '../../Loading/Loading'
+import { connect } from 'react-redux'
 
-const initialState = {
-    singleTask: null,
-    isEdited: false,
-    isLoaded: false,
-    esError: false
-}
-const reducer = (state, action) => {
-    switch (action.type) {
-        case 'editedTask':
-            return {
-                ...state,
-                isEdited: !state.isEdited
-            }
-        case 'loadingOnOff':
-            return {
-                ...state,
-                isLoaded: action.isLoaded
-            }
-        case 'errorOnOff':
-            return {
-                ...state,
-                isError: action.isError
-            }
-        case 'setSingleTask':
-            return {
-                ...state,
-                singleTask: action.singleTask
-            }
-        default:
-            throw new Error()
-    }
+import { setSingleTaskThunk, deleteSingleTaskThunk, editSingleTaskThunk } from '../../../Redux/actions'
 
-}
 const SingleTask = (props) => {
-    const [state, dispatch] = useReducer(reducer, initialState)
-
-    useEffect(() => {
-        const id = props.match.params.id
-        dispatch({ type: 'loadingOnOff', isLoaded: true })
-        fetch(`http://localhost:3001/task/${id}`)
-            .then(res => res.json())
-            .then(data => {
-                if (data.error) {
-                    dispatch({ type: 'errorOnOff', isError: true })
-                    throw data.error
-                }
-                dispatch({ type: 'setSingleTask', singleTask: data })
-                dispatch({ type: 'loadingOnOff', isLoaded: false })
-            })
-            .catch(error => {
-                console.error(`Can't get a single task ${error}`)
-            })
-    }, [props.match.params.id])
-
-    const deleteSingleTask = () => {
-        dispatch({ type: 'loadingOnOff', isLoaded: true })
-        const id = props.match.params.id
-        fetch(`http://localhost:3001/task/${id}`, {
-            method: 'DELETE'
-        })
-            .then(res => res.json())
-            .then(data => {
-                if (data.error) {
-                    dispatch({ type: 'loadingOnOff', isLoaded: false })
-                    throw data.error
-                }
-                props.history.push('/')
-            })
-            .catch(error => {
-                console.error(`Can't delete this task ${error}`)
-            })
-    }
-    
-    const saveEditedTask = (formData) => {
-        dispatch({ type: 'loadingOnOff', isLoaded: true })
-        fetch(`http://localhost:3001/task/${formData._id}`, {
-            method: 'PUT',
-            body: JSON.stringify(formData),
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        })
-            .then(res => res.json())
-            .then(data => {
-                if (data.error) {
-                    throw data.error
-                }
-                dispatch({ type: 'setSingleTask', singleTask: data })
-            })
-            .catch(error => {
-                console.log(`Can't edit single task! ${error}`)
-            })
-            .finally(() => { dispatch({ type: 'loadingOnOff', isLoaded: false }) })
-    }
-
     const {
         singleTask,
         isEdited,
         isLoaded,
-        isError
-    } = state
+        isError,
+        setSingleTask
+    } = props
+
+    useEffect(() => {
+        setSingleTask(props.match.params.id)
+    }, [setSingleTask])
+
+    const deleteOneTask = () => {
+        props.deleteSingleTask(props)
+    }
+
+    const saveEditedTask = (formData) => {
+        props.editSingleTask(formData)
+    }
 
     if (isError) return <NotFound />
     if (!singleTask) return <Loading />
@@ -128,20 +51,20 @@ const SingleTask = (props) => {
                         </Button>
                     <Button className='mr-3'
                         style={{ backgroundColor: 'rgba(54, 110, 161, 0.8)', border: '0' }}
-                        onClick={() => dispatch({ type: 'editedTask' })}
+                        onClick={() => props.isEdited}
                     >
                         Edit
                         </Button>
                     <Button
                         style={{ backgroundColor: 'rgba(145, 68, 122, 0.85)', border: '0' }}
-                        onClick={deleteSingleTask}
+                        onClick={deleteOneTask}
                     >
                         Delete
                         </Button>
                 </div>
                 {
                     isEdited && <TaskModal
-                        onHide={() => dispatch({ type: 'editedTask' })}
+                        onHide={() => props.isEdited}
                         onSubmit={saveEditedTask}
                         editingTask={singleTask}
                         modalMessage={'Edit Task'}
@@ -156,4 +79,27 @@ SingleTask.propTypes = {
     deleteSingleTask: PropTypes.func,
     goBackOneStep: PropTypes.func
 }
-export default SingleTask
+
+const mapStateToProps = (state) => {
+    const {
+        singleTask,
+        isEdited,
+        isLoaded,
+        esError
+    } = state.singleTaskState
+    return {
+        singleTask,
+        isEdited,
+        isLoaded,
+        esError
+    }
+}
+const mapDispatchToProps = (dispatch) => {
+    return {
+        setSingleTask: (id) => dispatch(setSingleTaskThunk(id)),
+        deleteSingleTask: (props) => dispatch(deleteSingleTaskThunk(props)),
+        editSingleTask: (formData) => dispatch(editSingleTaskThunk(formData))
+    }
+}
+const SingleTaskWithRedux = connect(mapStateToProps, mapDispatchToProps)(SingleTask)
+export default withRouter(SingleTaskWithRedux)
