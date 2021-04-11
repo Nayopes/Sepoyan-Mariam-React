@@ -22,7 +22,7 @@ const SingleTask = (props) => {
 
     useEffect(() => {
         setSingleTask(props.match.params.id)
-    }, [setSingleTask])
+    }, [props.match.params.id, setSingleTask])
 
     const deleteOneTask = () => {
         props.deleteSingleTask(props)

@@ -1,5 +1,6 @@
 import { useEffect } from 'react'
 import Task from '../../Task/Task'
+import Search from '../../Search/Search'
 import ConfirmModal from '../../ConfirmModal/ConfirmModal'
 import TaskModal from '../../TaskModal/TaskModal'
 import styles from './todo.module.css'
@@ -7,7 +8,15 @@ import { Container, Row, Col, Button } from 'react-bootstrap'
 import Loading from '../../Loading/Loading'
 import { connect } from 'react-redux'
 import actionTypes from '../../../Redux/actionType'
-import { setTasksThunk, addTaskThunk, deleteOneTaskThunk, removeSomeTasksThunk, editOneTaskThunk } from '../../../Redux/actions'
+import { ToastContainer, toast } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
+import { setTasksThunk, 
+    addTaskThunk, 
+    deleteOneTaskThunk, 
+    removeSomeTasksThunk, 
+    editOneTaskThunk, 
+    toggleTaskStatusThunk 
+} from '../../../Redux/actions'
 
 
 const ToDo = (props) => {
@@ -18,14 +27,37 @@ const ToDo = (props) => {
         isLoaded,
         isModalForAddOpen,
         isModalForSelectedOpen,
-        ismodalForAllOpen,
         editingTask,
-        setTasks
+        setTasks,
+        errorMessage,
+        successMessage
     } = props
     const handleSubmit = (formData) => { props.addTask(formData) }
     useEffect(() => {
         setTasks()
     }, [setTasks])
+    useEffect(()=>{
+        errorMessage && toast.error(`😲${errorMessage}`, {
+            position: "top-right",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+        })
+    }, [errorMessage])
+    useEffect(()=>{
+        successMessage && toast.success(`👌 ${successMessage} `, {
+            position: "top-right",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+        })
+    }, [successMessage])
 
     if (isLoaded) return <Loading />
 
@@ -45,14 +77,19 @@ const ToDo = (props) => {
                     disabled={!!removeTasks.size}
                     checked={removeTasks.has(task._id)}
                     handleEditOneTask={props.handleEditTask}
+                    toggleTaskStatus={props.toggleTaskStatus}
                 />
             </Col>
         )
     })
+    
     return (
         <>
             <div>
                 <Container>
+                    <Row>
+                        <Search />
+                    </Row>
                     <Row className="d-flex justify-content-center mt-4">
                         <Col>
                             <h1 className={styles.title}>To Do Component</h1>
@@ -92,7 +129,7 @@ const ToDo = (props) => {
             {
                 isModalForSelectedOpen && <ConfirmModal
                     onHide={props.openModalForSelected}
-                    onClick={props.removeSomeTasks}
+                    onClick={() => props.removeSomeTasks(removeTasks)}
                     message={
                         `${removeTasks.size === tasks.length && tasks.length !== 1 ? 'All' : removeTasks.size} 
                                 ${removeTasks.size === 1 ? ' task ' : ' tasks '} 
@@ -101,14 +138,7 @@ const ToDo = (props) => {
                     buttonName={'Delete'}
                 />
             }
-            {
-                ismodalForAllOpen && <ConfirmModal
-                    onHide={props.openModalForAll}
-                    // onClick={removeAllTasks}
-                    message={`${tasks.length === 1 ? '1 task ' : 'All tasks '} will be deleted. Are you sure?`}
-                    buttonName={'Delete'}
-                />
-            }
+
             {
                 editingTask !== null && <TaskModal
                     onHide={props.editingTaskSetNull}
@@ -124,6 +154,9 @@ const ToDo = (props) => {
                     modalMessage={'Add Task'}
                 />
             }
+            {
+                <ToastContainer />
+            }
 
         </>
     )
@@ -136,9 +169,10 @@ const mapStateToProps = (state) => {
         isSelectedAll,
         isModalForAddOpen,
         isModalForSelectedOpen,
-        ismodalForAllOpen,
         editingTask,
-        isLoaded
+        isLoaded,
+        errorMessage,
+        successMessage
     } = state.todoState
     return {
         tasks,
@@ -146,9 +180,10 @@ const mapStateToProps = (state) => {
         isSelectedAll,
         isModalForAddOpen,
         isModalForSelectedOpen,
-        ismodalForAllOpen,
         editingTask,
-        isLoaded
+        isLoaded,
+        errorMessage,
+        successMessage
     }
 }
 const mapDispatchToProps = (dispatch) => {
@@ -156,8 +191,9 @@ const mapDispatchToProps = (dispatch) => {
         setTasks: () => dispatch(setTasksThunk()),
         addTask: (formData) => dispatch(addTaskThunk(formData)),
         deleteOneTask: (_id) => dispatch(deleteOneTaskThunk(_id)),
-        removeSomeTasks: () => dispatch(removeSomeTasksThunk()),
+        removeSomeTasks: (removeTasks) => dispatch(removeSomeTasksThunk(removeTasks)),
         editOneTask: (data) => dispatch(editOneTaskThunk(data)),
+        toggleTaskStatus: (task)=> dispatch(toggleTaskStatusThunk(task)),
         toggleLoaded: (isLoaded) => dispatch({ type: actionTypes.TOGGLE_LOADED, isLoaded }),
         toggleCheckRemoveTasks: (_id) => dispatch({ type: actionTypes.TOGGLE_CHECK_REMOVE_TASKS, _id }),
         toggleCheckAllSelected: () => dispatch({ type: actionTypes.TOGGLE_CHECK_ALL_SELECTED }),

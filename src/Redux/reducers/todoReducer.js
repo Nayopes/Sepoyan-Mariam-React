@@ -9,15 +9,24 @@ const initialState = {
     isModalForAddOpen: false,
     isModalForSelectedOpen: false,
     ismodalForAllOpen: false,
-    editingTask: null
+    editingTask: null,
+    successMessage: '',
+    errorMessage: ''
 
 }
 const reducer = (state = initialState, action) => {
     switch (action.type) {
+        case actionTypes.SET_ERROR_MESSAGE:{
+            return{
+                ...state,
+                errorMessage: action.errorMessage
+            }
+        }
         case actionTypes.SET_TASKS: {
             return {
                 ...state,
-                tasks: action.data
+                tasks: action.data,
+                successMessage: `Tasks are shown successfully.`
             }
         }
         case actionTypes.TOGGLE_CHECK_REMOVE_TASKS: {
@@ -35,42 +44,48 @@ const reducer = (state = initialState, action) => {
         case actionTypes.TOGGLE_LOADED: {
             return {
                 ...state,
-                isLoaded: action.isLoaded
+                isLoaded: action.isLoaded,
+                errorMessage: action.isLoaded? '' : state.errorMessage,
+                successMessage: action.isLoaded? '' : state.successMessage
             }
         }
         case actionTypes.DELETE_ONE_TASK: {
-            let tasks = [...state.todoState.tasks]
+            let tasks = [...state.tasks]
             tasks = tasks.filter(el => el._id !== action._id)
             return {
                 ...state,
-                tasks
+                tasks,
+                successMessage: 'Task is deleted successfully!'
             }
         }
         case actionTypes.ADD_TASK: {
-            let tasks = [...state.todoState.tasks]
+            let tasks = [...state.tasks]
             tasks.push(action.data)
             return {
                 ...state,
-                tasks
+                tasks,
+                successMessage: 'Task is added successfully!'
             }
         }
         case actionTypes.EDIT_TASK: {
-            let tasks = [...state.todoState.tasks]
+            let tasks = [...state.tasks]
             const i = tasks.findIndex(el => el._id === action.data._id)
             tasks[i] = action.data
             return {
                 ...state,
-                tasks
+                tasks,
+                successMessage: 'Task is edited successfully!'
             }
         }
         case actionTypes.REMOVE_SOME_TASKS: {
-            let tasks = [...state.todoState.tasks]
+            let tasks = [...state.tasks]
             let {removeTasks} = state
             tasks = tasks.filter(el => !removeTasks.has(el._id))
             return {
                 ...state,
                 tasks,
-                removeTasks: new Set()
+                removeTasks: new Set(),
+                successMessage: 'Selected tasks are deleted successfully!'
             }
         }
         case actionTypes.TOGGLE_CHECK_ALL_SELECTED: {
@@ -117,6 +132,15 @@ const reducer = (state = initialState, action) => {
             return {
                 ...state,
                 editingTask: null
+            }
+        }
+        case actionTypes.TOGGLE_TASK_STATUS:{
+            let tasks = [...state.tasks]
+            const i = tasks.findIndex(task=>task._id===action.task._id)
+            tasks[i] = action.task
+            return{
+                ...state,
+                tasks
             }
         }
         default: return state

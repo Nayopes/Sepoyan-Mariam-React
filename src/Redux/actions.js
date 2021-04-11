@@ -12,6 +12,7 @@ export const setTasksThunk = () => (dispatch) => {
             dispatch({ type: actionTypes.SET_TASKS, data })
         })
         .catch(error => {
+            dispatch({type: actionTypes.SET_ERROR_MESSAGE, errorMessage: error.message})
             console.error(`Can't get tasks ${error}`)
         })
         .finally(() => {
@@ -38,6 +39,7 @@ export const addTaskThunk = (formData) => (dispatch) => {
             dispatch({ type: actionTypes.ADD_TASK, data })
         })
         .catch(error => {
+            dispatch({type: actionTypes.SET_ERROR_MESSAGE, errorMessage: error.message})
             console.error(`Can't get tasks ${error}`)
         })
         .finally(() => {
@@ -58,6 +60,7 @@ export const deleteOneTaskThunk = (_id) => (dispatch) => {
             dispatch({ type: actionTypes.DELETE_ONE_TASK, _id })
         })
         .catch(error => {
+            dispatch({type: actionTypes.SET_ERROR_MESSAGE, errorMessage: error.message})
             console.error(`Can't delete a task ${error}`)
         })
         .finally(() => {
@@ -65,11 +68,11 @@ export const deleteOneTaskThunk = (_id) => (dispatch) => {
         })
 }
 
-export const removeSomeTasksThunk = () => (dispatch) => {
+export const removeSomeTasksThunk = (removeTasks) => (dispatch) => {
     dispatch({ type: actionTypes.TOGGLE_LOADED, isLoaded: true })
     fetch('http://localhost:3001/task', {
         method: 'PATCH',
-        body: JSON.stringify({ tasks: Array.from(this.props.removeTasks) }),
+        body: JSON.stringify({ tasks: Array.from(removeTasks) }),
         headers: {
             'Content-Type': 'Application/json'
         }
@@ -82,6 +85,7 @@ export const removeSomeTasksThunk = () => (dispatch) => {
             dispatch({ type: actionTypes.REMOVE_SOME_TASKS })
         })
         .catch(error => {
+            dispatch({type: actionTypes.SET_ERROR_MESSAGE, errorMessage: error.message})
             console.error(`Can't delete selected tasks ${error}`)
         })
         .finally(() => {
@@ -106,11 +110,37 @@ export const editOneTaskThunk = (editTask) => (dispatch) => {
             dispatch({ type: actionTypes.EDIT_TASK, data })
         })
         .catch(error => {
+            dispatch({type: actionTypes.SET_ERROR_MESSAGE, errorMessage: error.message})
             console.error(`Can't edit a task ${error}`)
         })
         .finally(() => {
             dispatch({ type: actionTypes.TOGGLE_LOADED, isLoaded: false })
         })
+}
+
+export const toggleTaskStatusThunk=(task)=>(dispatch)=>{
+    dispatch({ type: actionTypes.TOGGLE_LOADED, isLoaded: true })
+    const status= task.status==='active'? 'done' : 'active'
+    fetch(`http://localhost:3001/task/${task._id}`,{
+        method: 'PUT',
+        body: JSON.stringify({status}),
+        headers: {
+            'Content-Type': 'Application/json'
+        }})
+        .then(res=>res.json())
+        .then(data=>{
+            if(data.error) throw data.error
+            dispatch({type: actionTypes.TOGGLE_TASK_STATUS, task: data})
+        })
+        .catch(error=>{
+            dispatch({type: actionTypes.SET_ERROR_MESSAGE, errorMessage: error.message})
+            console.error(`Can't change a status ${error}`)
+        })
+        .finally(() => {
+            dispatch({ type: actionTypes.TOGGLE_LOADED, isLoaded: false })
+        })
+
+    
 }
 
 //SingleTask

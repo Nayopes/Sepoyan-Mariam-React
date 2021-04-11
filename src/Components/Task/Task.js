@@ -1,7 +1,7 @@
 import React from 'react'
 import { Card, Button } from 'react-bootstrap'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faTrash, faEdit, faArrowLeft } from '@fortawesome/free-solid-svg-icons'
+import { faTrash, faEdit, faHourglassHalf, faCheckSquare} from '@fortawesome/free-solid-svg-icons'
 import styles from './task.module.css'
 import PropTypes from 'prop-types'
 import DateFormat from '../../Helpers/DateFormat'
@@ -14,7 +14,8 @@ class Task extends React.PureComponent {
             handleDeleteOneTask,
             toggleSetRemoveTaskIds,
             handleEditOneTask,
-            checked
+            checked,
+            toggleTaskStatus
         } = this.props
         return (
             <Card className={`${styles.task} ${checked && styles.checked}`}>
@@ -36,8 +37,9 @@ class Task extends React.PureComponent {
                     <Button
                         variant="info"
                         className="mr-3"
+                        onClick={()=>toggleTaskStatus(task)}
                     >
-                        <FontAwesomeIcon icon={faArrowLeft} />
+                        <FontAwesomeIcon icon={task.status==='active' ? faHourglassHalf : faCheckSquare} />
                     </Button>
                     <Button
                         variant="warning"
