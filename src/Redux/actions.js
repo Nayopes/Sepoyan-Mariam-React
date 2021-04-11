@@ -12,8 +12,7 @@ export const setTasksThunk = () => (dispatch) => {
             dispatch({ type: actionTypes.SET_TASKS, data })
         })
         .catch(error => {
-            dispatch({type: actionTypes.SET_ERROR_MESSAGE, errorMessage: error.message})
-            console.error(`Can't get tasks ${error}`)
+            dispatch({ type: actionTypes.SET_ERROR_MESSAGE, errorMessage: error.message })
         })
         .finally(() => {
             dispatch({ type: actionTypes.TOGGLE_LOADED, isLoaded: false })
@@ -39,8 +38,7 @@ export const addTaskThunk = (formData) => (dispatch) => {
             dispatch({ type: actionTypes.ADD_TASK, data })
         })
         .catch(error => {
-            dispatch({type: actionTypes.SET_ERROR_MESSAGE, errorMessage: error.message})
-            console.error(`Can't get tasks ${error}`)
+            dispatch({ type: actionTypes.SET_ERROR_MESSAGE, errorMessage: error.message })
         })
         .finally(() => {
             dispatch({ type: actionTypes.TOGGLE_LOADED, isLoaded: false })
@@ -60,8 +58,7 @@ export const deleteOneTaskThunk = (_id) => (dispatch) => {
             dispatch({ type: actionTypes.DELETE_ONE_TASK, _id })
         })
         .catch(error => {
-            dispatch({type: actionTypes.SET_ERROR_MESSAGE, errorMessage: error.message})
-            console.error(`Can't delete a task ${error}`)
+            dispatch({ type: actionTypes.SET_ERROR_MESSAGE, errorMessage: error.message })
         })
         .finally(() => {
             dispatch({ type: actionTypes.TOGGLE_LOADED, isLoaded: false })
@@ -85,8 +82,7 @@ export const removeSomeTasksThunk = (removeTasks) => (dispatch) => {
             dispatch({ type: actionTypes.REMOVE_SOME_TASKS })
         })
         .catch(error => {
-            dispatch({type: actionTypes.SET_ERROR_MESSAGE, errorMessage: error.message})
-            console.error(`Can't delete selected tasks ${error}`)
+            dispatch({ type: actionTypes.SET_ERROR_MESSAGE, errorMessage: error.message })
         })
         .finally(() => {
             dispatch({ type: actionTypes.TOGGLE_LOADED, isLoaded: false })
@@ -110,43 +106,38 @@ export const editOneTaskThunk = (editTask) => (dispatch) => {
             dispatch({ type: actionTypes.EDIT_TASK, data })
         })
         .catch(error => {
-            dispatch({type: actionTypes.SET_ERROR_MESSAGE, errorMessage: error.message})
-            console.error(`Can't edit a task ${error}`)
+            dispatch({ type: actionTypes.SET_ERROR_MESSAGE, errorMessage: error.message })
         })
         .finally(() => {
             dispatch({ type: actionTypes.TOGGLE_LOADED, isLoaded: false })
         })
 }
 
-export const toggleTaskStatusThunk=(task)=>(dispatch)=>{
+export const toggleTaskStatusThunk = (task) => (dispatch) => {
     dispatch({ type: actionTypes.TOGGLE_LOADED, isLoaded: true })
-    const status= task.status==='active'? 'done' : 'active'
-    fetch(`http://localhost:3001/task/${task._id}`,{
+    const status = task.status === 'active' ? 'done' : 'active'
+    fetch(`http://localhost:3001/task/${task._id}`, {
         method: 'PUT',
-        body: JSON.stringify({status}),
+        body: JSON.stringify({ status }),
         headers: {
             'Content-Type': 'Application/json'
-        }})
-        .then(res=>res.json())
-        .then(data=>{
-            if(data.error) throw data.error
-            dispatch({type: actionTypes.TOGGLE_TASK_STATUS, task: data})
+        }
+    })
+        .then(res => res.json())
+        .then(data => {
+            if (data.error) throw data.error
+            dispatch({ type: actionTypes.TOGGLE_TASK_STATUS, task: data })
         })
-        .catch(error=>{
-            dispatch({type: actionTypes.SET_ERROR_MESSAGE, errorMessage: error.message})
-            console.error(`Can't change a status ${error}`)
+        .catch(error => {
+            dispatch({ type: actionTypes.SET_ERROR_MESSAGE, errorMessage: error.message })
         })
         .finally(() => {
             dispatch({ type: actionTypes.TOGGLE_LOADED, isLoaded: false })
         })
-
-    
 }
-
 //SingleTask
-
 export const setSingleTaskThunk = (id) => (dispatch) => {
-    // dispatch({ type: actionTypes.LOADING_TURN_OFF_ON, isLoaded: true })
+    dispatch({ type: actionTypes.LOADING_TURN_OFF_ON, isLoaded: true })
     fetch(`http://localhost:3001/task/${id}`)
         .then(res => res.json())
         .then(data => {
@@ -154,12 +145,10 @@ export const setSingleTaskThunk = (id) => (dispatch) => {
                 dispatch({ type: actionTypes.ERROR_TURN_OFF_ON, isError: true })
                 throw data.error
             }
-
             dispatch({ type: actionTypes.SET_SINGLE_TASK, singleTask: data })
-
         })
         .catch(error => {
-            console.error(`Can't get a single task ${error}`)
+            dispatch({ type: actionTypes.SET_ERROR_MESSAGE, errorMessage: error.message })
         })
         .finally(() => {
             dispatch({ type: actionTypes.LOADING_TURN_OFF_ON, isLoaded: false })
@@ -198,10 +187,31 @@ export const editSingleTaskThunk = (formData) => (dispatch) => {
             if (data.error) {
                 throw data.error
             }
-            dispatch({ type: 'setSingleTask', singleTask: data })
+            dispatch({ type: actionTypes.SET_SINGLE_TASK, singleTask: data })
         })
         .catch(error => {
-            console.log(`Can't edit single task! ${error}`)
+            dispatch({ type: actionTypes.SET_ERROR_MESSAGE, errorMessage: error.message })
         })
         .finally(() => { dispatch({ type: actionTypes.LOADING_TURN_OFF_ON, isLoaded: false }) })
+}
+
+//SearchForm 
+export const sortFilterTasksThunk = (queryData) => (dispatch) => {
+    let query = "?"
+    for (let key in queryData) {
+        query += key + "=" + queryData[key] + "&"
+    }
+    dispatch({ type: actionTypes.LOADING_TURN_OFF_ON, isLoaded: false })
+    fetch(`http://localhost:3001/task` + query.slice(0, query.length - 1))
+        .then(res => res.json())
+        .then(data => {
+            if (data.error) throw data.error
+            dispatch({ type: actionTypes.SET_TASKS, data })
+        })
+        .catch(error => {
+            dispatch({ type: actionTypes.SET_ERROR_MESSAGE, errorMessage: error.message })
+        })
+        .finally(() => {
+            dispatch({ type: actionTypes.LOADING_TURN_OFF_ON, isLoaded: false })
+        })
 }
