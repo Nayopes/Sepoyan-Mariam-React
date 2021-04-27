@@ -1,32 +1,20 @@
 import actionTypes from '../actionType'
 
 const initialState = {
-
     tasks: [],
     removeTasks: new Set(),
     isSelectedAll: false,
-    isLoaded: false,
     isModalForAddOpen: false,
     isModalForSelectedOpen: false,
     ismodalForAllOpen: false,
-    editingTask: null,
-    successMessage: '',
-    errorMessage: ''
-
+    editingTask: null
 }
 const reducer = (state = initialState, action) => {
     switch (action.type) {
-        case actionTypes.SET_ERROR_MESSAGE:{
-            return{
-                ...state,
-                errorMessage: action.errorMessage
-            }
-        }
         case actionTypes.SET_TASKS: {
             return {
                 ...state,
-                tasks: action.data,
-                successMessage: `Tasks are shown successfully.`
+                tasks: action.data
             }
         }
         case actionTypes.TOGGLE_CHECK_REMOVE_TASKS: {
@@ -39,14 +27,6 @@ const reducer = (state = initialState, action) => {
             return {
                 ...state,
                 removeTasks
-            }
-        }
-        case actionTypes.TOGGLE_LOADED: {
-            return {
-                ...state,
-                isLoaded: action.isLoaded,
-                errorMessage: action.isLoaded? '' : state.errorMessage,
-                successMessage: action.isLoaded? '' : state.successMessage
             }
         }
         case actionTypes.DELETE_ONE_TASK: {
@@ -64,7 +44,7 @@ const reducer = (state = initialState, action) => {
             return {
                 ...state,
                 tasks,
-                successMessage: 'Task is added successfully!'
+                successMessage: 'Task is deleted successfully!'
             }
         }
         case actionTypes.EDIT_TASK: {

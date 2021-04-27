@@ -1,0 +1,50 @@
+.nameTitle{
+    color: rgba(65, 3, 41, 0.918);
+    font-weight: bold;
+    text-align: center;
+    margin-top: 2%;
+    font-size: 2.6em;
+}
+.textAbout{
+    text-align: left;
+    margin: 2% 14% 0 24%;
+    font-size: 1.2rem;
+}
+hr{
+    width: 100%;
+    text-align: left;
+    margin:5% 0 2% 0;
+    border: none;
+    border-top: 3px solid rgba(107, 57, 84, 0.904);
+}
+img{
+    border: 8px solid rgba(107, 57, 84, 0.904);
+    width: 18%;
+    margin-top: 4%;
+}
+.textConst{
+    font-size: 1.2rem;
+    font-family: Arial, Helvetica, sans-serif;
+}
+.barsDiv{
+    width: 50%; 
+}
+.job{
+    font-size: 1.1rem;
+}
+.contactNumbers{
+    font-size: 1.1rem;
+    display: flex;
+}
+.contactList{
+    display: flex;
+    justify-content: space-between;
+    margin: 4% 42% 4% 1% ;
+}
+a{
+color: rgb(99, 65, 99);
+}
+.ps{
+    text-align: end;
+    font-size: 1rem;
+}

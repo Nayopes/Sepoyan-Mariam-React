@@ -28,7 +28,7 @@ const Search = (props) => {
     return (
         <>
             <div className={styles.mainSearch}>
-                <h1>Search</h1>
+                <h1>Search & Filter Tasks</h1>
                 <div className={styles.searchSection}>
                     <div>
                         <Form.Control

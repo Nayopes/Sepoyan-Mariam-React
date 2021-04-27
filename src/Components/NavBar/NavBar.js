@@ -12,13 +12,13 @@ const navsArray = [
     },
     {
         to: '/about',
-        name: 'About us'
+        name: 'About me'
     },
 
 ]
 const NavBar = () => {
     const navsItems = navsArray.map((el, index) => {
-        return <Nav.Item key={index}>
+        return <Nav.Item key={index} className={styles.mek}>
             <NavLink
                 to={el.to}
                 activeClassName={styles.activeLink}
@@ -29,9 +29,13 @@ const NavBar = () => {
         </Nav.Item>
     })
     return (
-        <Nav activeKey="/home">
-            {navsItems}
-        </Nav>
+        <div className={styles.navStyle}>
+            <Nav activeKey="/home" className={styles.oneNav}>
+                {navsItems}
+            </Nav>
+        </div>
+
     )
 }
+
 export default NavBar

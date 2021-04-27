@@ -8,16 +8,16 @@ import TaskModal from '../../TaskModal/TaskModal'
 import NotFound from '../NotFound/NotFound'
 import Loading from '../../Loading/Loading'
 import { connect } from 'react-redux'
-
+import actionTypes from '../../../Redux/actionType'
 import { setSingleTaskThunk, deleteSingleTaskThunk, editSingleTaskThunk } from '../../../Redux/actions'
-
 const SingleTask = (props) => {
     const {
         singleTask,
         isEdited,
         isLoaded,
         isError,
-        setSingleTask
+        setSingleTask,
+        editSingleTask
     } = props
 
     useEffect(() => {
@@ -27,11 +27,6 @@ const SingleTask = (props) => {
     const deleteOneTask = () => {
         props.deleteSingleTask(props)
     }
-
-    const saveEditedTask = (formData) => {
-        props.editSingleTask(formData)
-    }
-
     if (isError) return <NotFound />
     if (!singleTask) return <Loading />
     if (isLoaded) return <Loading />
@@ -51,7 +46,7 @@ const SingleTask = (props) => {
                         </Button>
                     <Button className='mr-3'
                         style={{ backgroundColor: 'rgba(54, 110, 161, 0.8)', border: '0' }}
-                        onClick={() => props.isEdited}
+                        onClick={props.toggleEditTask}
                     >
                         Edit
                         </Button>
@@ -64,8 +59,8 @@ const SingleTask = (props) => {
                 </div>
                 {
                     isEdited && <TaskModal
-                        onHide={() => props.isEdited}
-                        onSubmit={saveEditedTask}
+                        onHide={props.toggleEditTask}
+                        onSubmit={editSingleTask}
                         editingTask={singleTask}
                         modalMessage={'Edit Task'}
                     />
@@ -74,31 +69,32 @@ const SingleTask = (props) => {
         </div>
     )
 }
-
 SingleTask.propTypes = {
     deleteSingleTask: PropTypes.func,
     goBackOneStep: PropTypes.func
 }
-
 const mapStateToProps = (state) => {
     const {
         singleTask,
         isEdited,
-        isLoaded,
-        esError
+        isError
     } = state.singleTaskState
+    const {
+        isLoaded
+    } = state.generalState
     return {
         singleTask,
         isEdited,
         isLoaded,
-        esError
+        isError
     }
 }
 const mapDispatchToProps = (dispatch) => {
     return {
         setSingleTask: (id) => dispatch(setSingleTaskThunk(id)),
         deleteSingleTask: (props) => dispatch(deleteSingleTaskThunk(props)),
-        editSingleTask: (formData) => dispatch(editSingleTaskThunk(formData))
+        toggleEditTask: ()=> dispatch({type: actionTypes.SINGLE_TASK_EDITED_TASK}),
+        editSingleTask: (singleTask) => dispatch(editSingleTaskThunk(singleTask))
     }
 }
 const SingleTaskWithRedux = connect(mapStateToProps, mapDispatchToProps)(SingleTask)

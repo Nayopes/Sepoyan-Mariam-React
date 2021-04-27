@@ -3,8 +3,7 @@ import actionTypes from "../actionType"
 const initialState = {
     singleTask: null,
     isEdited: false,
-    isLoaded: false,
-    esError: false
+    isError: false
 }
 const reducer = (state = initialState, action) => {
     switch (action.type) {
@@ -12,11 +11,6 @@ const reducer = (state = initialState, action) => {
             return {
                 ...state,
                 isEdited: !state.isEdited
-            }
-        case actionTypes.LOADING_TURN_OFF_ON:
-            return {
-                ...state,
-                isLoaded: action.isLoaded
             }
         case actionTypes.ERROR_TURN_OFF_ON:
             return {

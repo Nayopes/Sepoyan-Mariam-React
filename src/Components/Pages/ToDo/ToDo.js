@@ -49,7 +49,7 @@ const ToDo = (props) => {
     }, [errorMessage])
     useEffect(()=>{
         successMessage && toast.success(`👌 ${successMessage} `, {
-            position: "top-right",
+            position: "bottom-right",
             autoClose: 5000,
             hideProgressBar: false,
             closeOnClick: true,
@@ -85,14 +85,14 @@ const ToDo = (props) => {
     
     return (
         <>
-            <div>
+            <div className={styles.mainToDo}>
                 <Container>
                     <Row>
                         <Search />
                     </Row>
                     <Row className="d-flex justify-content-center mt-4">
                         <Col>
-                            <h1 className={styles.title}>To Do Component</h1>
+                            <h1 className={styles.title}>TASKS</h1>
                             <Button
                                 variant='info'
                                 className='mt-4'
@@ -106,7 +106,7 @@ const ToDo = (props) => {
                         {Tasks}
                     </Row>
                     <Row className="d-flex justify-content-center">
-                        <Col className="mb-6">
+                        <Col className="mb-5">
                             <Button
                                 variant="info"
                                 className={!tasks.length ? 'd-none' : 'mr-3'}
@@ -170,10 +170,12 @@ const mapStateToProps = (state) => {
         isModalForAddOpen,
         isModalForSelectedOpen,
         editingTask,
-        isLoaded,
-        errorMessage,
         successMessage
     } = state.todoState
+    const {
+        isLoaded,
+        errorMessage
+    } = state.generalState
     return {
         tasks,
         removeTasks,
@@ -202,7 +204,6 @@ const mapDispatchToProps = (dispatch) => {
         openModalForAll: () => dispatch({ type: actionTypes.OPEN_MODAL_FOR_ALL }),
         handleEditTask: (task) => dispatch({ type: actionTypes.HANDLE_EDIT_TASK, task }),
         editingTaskSetNull: () => dispatch({ type: actionTypes.EDIT_TASK_SET_NULL }),
-
     }
 }
 
