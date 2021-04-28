@@ -158,14 +158,14 @@ export const setSingleTaskThunk = (id) => (dispatch) => {
 }
 
 export const deleteSingleTaskThunk = (props) => (dispatch) => {
-    dispatch({ type: actionTypes.LOADING_TURN_OFF_ON, isLoaded: true })
+    dispatch({ type: actionTypes.TOGGLE_LOADED, isLoaded: true })
     fetch(`${API_URL}/task/${props.match.params.id}`, {
         method: 'DELETE'
     })
         .then(res => res.json())
         .then(data => {
             if (data.error) {
-                dispatch({ type: actionTypes.LOADING_TURN_OFF_ON, isLoaded: false })
+                dispatch({ type: actionTypes.TOGGLE_LOADED, isLoaded: false })
                 throw data.error
             }
             props.history.push('/')

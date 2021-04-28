@@ -10,21 +10,21 @@ class About extends React.Component {
     render() {
         const arrayLang = ['Native Armenian', 'Full Professional Russian', 'Professional Working English', 'Elementary Chinese']
         const listItems = arrayLang.map((el, idx) =>
-            <li key={idx}>• {el}</li>
+            <li key={idx}>{el}</li>
         )
         const arrayEdu = ['2021-present Bitschool Academy, React.JS',
             '2020-2021 Microsoft Innovation Center, Web Development, JavaScript',
             '2012-2016 Russian-Armenian (Slavonic) University, Foreign Regions Studies']
         const listEduItem = arrayEdu.map((item, idx) =>
-            <li key={idx}>• {item}</li>
+            <li key={idx}>{item}</li>
         )
         const otherSkills = ['SASS', 'Bootstrap', 'Redux', 'MongoDB', 'Git']
         const skillItem = otherSkills.map((item, idx) =>
-            <li key={idx}>• {item}</li>
+            <li key={idx}>{item}</li>
         )
         const addSkills = ['Zoho Desk', 'CRM', 'Games back offices', '1C']
         const addSkillItem = addSkills.map((item, idx) =>
-            <li key={idx}>• {item}</li>
+            <li key={idx}>{item}</li>
         )
         const hobbyList = ['Reading (both fiction and science)',
             `Programming (it's not just profession, it's a passion)`,
