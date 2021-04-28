@@ -30,14 +30,14 @@ class About extends React.Component {
             `Programming (it's not just profession, it's a passion)`,
             'Сharity (children with disabilities needs our love and support)']
         const hobbyItem = hobbyList.map((item, idx) =>
-            <li key={idx}>• {item}</li>
+            <li key={idx}>{item}</li>
         )
         const qualityList = ['Responsible (for me and my work)',
             'Hardworking  (I’m a little workaholic)',
             'Stress-resistant (after casino it’s so easy)',
             'Team-worker (cause it’s so nice to have a great team!)']
         const qualityItem = qualityList.map((item, idx) =>
-            <li key={idx}> • {item}</li>
+            <li key={idx}>{item}</li>
         )
         return (
             <div>
