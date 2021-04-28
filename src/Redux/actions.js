@@ -176,7 +176,7 @@ export const deleteSingleTaskThunk = (props) => (dispatch) => {
 }
 
 export const editSingleTaskThunk = (singleTask) => (dispatch) => {
-    dispatch({ type: actionTypes.LOADING_TURN_OFF_ON, isLoaded: true })
+    dispatch({ type: actionTypes.TOGGLE_LOADED, isLoaded: false })
     fetch(`${API_URL}/task/${singleTask._id}`, {
         method: 'PUT',
         body: JSON.stringify(singleTask),
@@ -194,7 +194,7 @@ export const editSingleTaskThunk = (singleTask) => (dispatch) => {
         .catch(error => {
             dispatch({ type: actionTypes.SET_ERROR_MESSAGE, errorMessage: error.message })
         })
-        .finally(() => { dispatch({ type: actionTypes.LOADING_TURN_OFF_ON, isLoaded: false }) })
+        .finally(() => { dispatch({ type: actionTypes.TOGGLE_LOADED, isLoaded: false }) })
 }
 
 //SearchForm 
