@@ -1,7 +1,6 @@
 import './App.css'
 import NavBar from './Components/NavBar/NavBar'
 import { Route, Switch, Redirect } from 'react-router-dom'
-
 import ToDo from './Components/Pages/ToDo/ToDo'
 import Contact from './Components/Pages/Contact/Contact'
 import About from './Components/Pages/About/About'
