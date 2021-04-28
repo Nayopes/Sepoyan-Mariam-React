@@ -44,7 +44,7 @@ const reducer = (state = initialState, action) => {
             return {
                 ...state,
                 tasks,
-                successMessage: 'Task is deleted successfully!'
+                successMessage: 'Task is added successfully!'
             }
         }
         case actionTypes.EDIT_TASK: {
